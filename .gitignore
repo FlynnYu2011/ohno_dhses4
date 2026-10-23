@@ -1,0 +1,8 @@
+.build/
+.build-tools/
+dist/
+*.keystore
+*.jks
+local.properties
+node_modules/
+

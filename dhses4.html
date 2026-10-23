@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>完蛋！我被四班同学包围了</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "微软雅黑", "PingFang SC", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ffe4ec 0%, #fff0f6 50%, #f3e8ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* 游戏主容器 */
+        #game-container {
+            width: 900px;
+            min-height: 680px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 24px;
+            box-shadow: 0 10px 40px rgba(244, 114, 182, 0.2);
+            overflow: hidden;
+            border: 3px solid #f9a8d4;
+            position: relative;
+        }
+
+        /* 开始界面 */
+        #start-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #fce7f3 0%, #fbcfe8 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        #start-screen h1 {
+            font-size: 48px;
+            color: #be185d;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        #start-screen p {
+            color: #9d174d;
+            font-size: 18px;
+            margin-bottom: 60px;
+        }
+
+        #start-btn {
+            padding: 16px 60px;
+            font-size: 22px;
+            background: linear-gradient(135deg, #f472b6, #ec4899);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.4);
+            transition: transform 0.2s;
+        }
+
+        #start-btn:hover { transform: scale(1.05); }
+
+        #romance-btn {
+            margin-top: 18px;
+            padding: 10px 24px;
+            border: 1px solid #ec4899;
+            border-radius: 24px;
+            background: white;
+            color: #9d174d;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #scene-area.couple-photo {
+            height: 480px;
+        }
+
+        #scene-area.video-scene {
+            height: auto;
+            min-height: 380px;
+            padding: 58px 20px 16px;
+            background: #18181b !important;
+        }
+
+        #sports-video {
+            display: block;
+            width: 100%;
+            max-height: 480px;
+            background: #000;
+            border-radius: 12px;
+        }
+
+        #sports-video-link {
+            display: inline-block;
+            margin-top: 10px;
+            color: #fbcfe8;
+            font-size: 14px;
+        }
+
+        /* 顶部好感度栏 */
+        #favor-bar {
+            height: 60px;
+            background: rgba(255, 255, 255, 0.85);
+            border-bottom: 2px solid #fbcfe8;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .favor-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .favor-name {
+            font-size: 14px;
+            color: #831843;
+            width: 60px;
+        }
+
+        .favor-track {
+            width: 120px;
+            height: 12px;
+            background: #fce7f3;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #f9a8d4;
+        }
+
+        .favor-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        #shen-fill { background: linear-gradient(90deg, #93c5fd, #60a5fa); }
+        #lu-fill { background: linear-gradient(90deg, #fdba74, #fb923c); }
+        #su-fill { background: linear-gradient(90deg, #f9a8d4, #f472b6); }
+
+        .heart-icon {
+            color: #f43f5e;
+            font-size: 16px;
+        }
+
+        /* 场景区域 */
+        #scene-area {
+            height: 380px;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        #scene-name {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            padding: 6px 16px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 20px;
+            color: #9d174d;
+            font-size: 14px;
+            border: 1px solid #fbcfe8;
+            z-index: 10;
+        }
+
+        /* 角色立绘 */
+        .character {
+            position: absolute;
+            bottom: 0;
+            width: 140px;
+            height: 280px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+
+        .character:hover { transform: translateY(-5px); }
+
+        .character-name {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            color: #831843;
+            margin-top: 10px;
+        }
+
+        .character-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        #char-shen { left: 80px; }
+        #char-lu { left: 380px; }
+        #char-su { right: 80px; }
+
+        .hidden { display: none !important; }
+
+        /* 对话框 */
+        #dialog-box {
+            height: 160px;
+            margin: 20px;
+            padding: 20px 25px;
+            background: white;
+            border: 2px solid #f9a8d4;
+            border-radius: 16px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        #speaker-name {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            padding: 4px 16px;
+            background: #f472b6;
+            color: white;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        #dialog-text {
+            font-size: 17px;
+            line-height: 1.8;
+            color: #4a044e;
+            margin-top: 10px;
+            white-space: pre-wrap;
+        }
+
+        #tip {
+            position: absolute;
+            bottom: 10px;
+            right: 30px;
+            font-size: 12px;
+            color: #f472b6;
+        }
+
+        /* 选项区域 */
+        #choices-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 0 20px 20px;
+        }
+
+        .choice-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+            border: 2px solid #f472b6;
+            border-radius: 12px;
+            color: #9d174d;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+
+        .choice-btn:hover {
+            background: linear-gradient(135deg, #fbcfe8, #f9a8d4);
+            transform: translateX(5px);
+        }
+
+        /* 互动气泡 */
+        #interaction-bubble {
+            position: absolute;
+            padding: 8px 14px;
+            background: white;
+            border: 2px solid #f472b6;
+            border-radius: 15px;
+            font-size: 13px;
+            color: #831843;
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        /* 全局手绘主题：纸张、墨线与淡彩 */
+        :root {
+            --paper: #fffdf5;
+            --ink: #51483e;
+            --pencil: #827665;
+            --rose: #d88b8b;
+            --line: #c4b8a2;
+        }
+        * { font-family: "KaiTi", "STKaiti", "楷体", "Microsoft YaHei", serif; }
+        body {
+            color: var(--ink);
+            background-color: #eae4d6;
+            background-image: radial-gradient(#b2a78c33 .7px, transparent .8px),
+                repeating-linear-gradient(0deg, transparent 0 31px, #a79d8820 31px 32px);
+            background-size: 6px 6px, auto;
+            padding: 36px 20px;
+        }
+        #game-container {
+            width: min(960px, 100%);
+            background: var(--paper);
+            border: 2px solid var(--pencil);
+            border-radius: 7px 12px 9px 5px / 10px 6px 12px 8px;
+            box-shadow: 5px 6px 0 #d7cdbb, 6px 7px 0 1px #a99c85, 12px 18px 35px #66584018;
+        }
+        #start-screen {
+            min-height: 680px;
+            position: relative;
+            height: auto;
+            padding: 48px 32px;
+            background-color: var(--paper);
+            background-image: radial-gradient(#aa9e811c .7px, transparent .8px),
+                repeating-linear-gradient(0deg, transparent 0 31px, #a9bdc52b 31px 32px);
+            background-size: 5px 5px, auto;
+        }
+        #start-screen::before {
+            content: "四班 · 青春观察手记";
+            font-size: 15px;
+            letter-spacing: 4px;
+            color: #8e806d;
+            border-bottom: 1px dashed #b6a68b;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        #start-screen::after {
+            content: "把心事写在这一页，把故事留给明天。";
+            color: #9b8e7a;
+            font-size: 14px;
+            margin-top: 32px;
+            letter-spacing: 2px;
+        }
+        #start-screen h1 {
+            max-width: 740px;
+            text-align: center;
+            font-size: clamp(28px, 4.3vw, 46px);
+            font-weight: 600;
+            line-height: 1.5;
+            letter-spacing: 3px;
+            color: var(--ink);
+            text-shadow: none;
+            transform: rotate(-1deg);
+            margin-bottom: 12px;
+            background: linear-gradient(transparent 70%, #f1d8a9a6 70% 91%, transparent 91%);
+        }
+        #start-screen p {
+            font-size: 17px;
+            color: #9a7168;
+            margin-bottom: 10px;
+            text-align: center;
+            line-height: 1.8;
+        }
+        .cover-sketch { width: min(390px, 90%); height: 160px; margin: 5px 0 23px; color: #837764; }
+        #start-btn, #romance-btn, .choice-btn {
+            border: 2px solid var(--pencil);
+            border-radius: 5px 9px 6px 10px / 8px 5px 10px 6px;
+            color: var(--ink);
+            box-shadow: 3px 4px 0 #b6a88e;
+            transition: transform .18s, box-shadow .18s, background-color .18s;
+        }
+        #start-btn { background: #efd2c7; font-size: 23px; padding: 13px 62px; transform: rotate(-1deg); }
+        #romance-btn { background: #f6f0df; margin-top: 19px; padding: 11px 22px; line-height: 1.5; }
+        #su-romance-btn { margin-top: 18px; padding: 10px 22px; text-align: center; max-width: 100%; }
+        #xu-romance-btn { margin-top: 18px; padding: 10px 22px; text-align: center; max-width: 100%; background: #e8eddc; }
+        .story-note { margin: 20px 0 0 !important; font-size: 12px !important; color: #8e806d !important; }
+        #xu-fill { background: repeating-linear-gradient(110deg, #9eaf87 0 3px, #cad4b7 3px 5px); }
+        #char-xu { left: 36.5%; }
+        .four-characters .character { width: 22%; }
+        .four-characters #char-shen { left: 2%; }
+        .four-characters #char-lu { left: 27%; }
+        .four-characters #char-su { left: 52%; right: auto; }
+        .four-characters #char-xu { left: 77%; }
+        #scene-area.xu-portrait { height: 480px; }
+        .xu-portrait #char-xu { height: auto; padding-bottom: 12px; background: transparent !important; }
+        .xu-portrait .character-avatar { display: none; }
+        #moments-panel { margin: 0 24px 24px; padding: 18px; border: 1px dashed #a9987d; border-radius: 5px 9px 4px 8px; background: #f7f2e5; }
+        #moments-panel h2 { font-size: 19px; font-weight: 500; margin-bottom: 6px; }
+        .moments-note { font-size: 12px; color: #8e806d; margin-bottom: 14px; }
+        .moments-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+        .moment-card { padding: 10px; background: #fffdf5; border: 1px solid #b8aa94; border-radius: 3px 6px 4px 7px; box-shadow: 2px 3px 0 #b6a88e35; }
+        .moment-card img { display: block; width: 100%; height: 165px; object-fit: cover; object-position: center 32%; border: 1px solid #c7bba5; }
+        .moment-card p { margin-top: 10px; font-size: 15px; line-height: 1.7; }
+        .moment-card small { display: block; margin-top: 8px; color: #8b7864; }
+        @media (max-width: 600px) {
+            #favor-bar .favor-item { flex-basis: 43%; }
+            .four-characters .character-avatar { width: 47px; height: 54px; font-size: 24px; }
+            #scene-area.xu-portrait { height: 390px; }
+            #moments-panel { margin: 0 14px 20px; padding: 12px; }
+            .moments-grid { grid-template-columns: 1fr; }
+            .moment-card img { height: 220px; object-fit: contain; background: #eee6d6; }
+        }
+        #start-btn:hover, #romance-btn:hover, .choice-btn:hover {
+            background: #f0dfb8;
+            transform: translate(-1px, -2px) rotate(-.5deg);
+            box-shadow: 5px 6px 0 #b6a88e;
+        }
+        button:active { translate: 2px 3px; }
+        button:focus-visible, a:focus-visible, .character:focus-visible, #dialog-box:focus-visible {
+            outline: 3px dashed #967556; outline-offset: 5px;
+        }
+        #favor-bar {
+            height: auto;
+            min-height: 70px;
+            gap: 16px;
+            padding: 18px 24px;
+            background: #f7f1e3;
+            border-bottom: 1px dashed #b3a58d;
+        }
+        .favor-item { gap: 8px; }
+        .favor-name { width: auto; min-width: 48px; color: var(--ink); font-size: 15px; }
+        .favor-track { width: clamp(50px, 12vw, 120px); height: 11px; background: #e8dfce; border: 1px solid #978872; border-radius: 4px 7px 5px 3px; transform: rotate(-1deg); }
+        .favor-fill { border-radius: 2px; background-size: 6px 6px !important; }
+        #shen-fill { background: repeating-linear-gradient(110deg, #9cb9c2 0 3px, #bed0d3 3px 5px); }
+        #lu-fill { background: repeating-linear-gradient(110deg, #d5b578 0 3px, #e4cea2 3px 5px); }
+        #su-fill { background: repeating-linear-gradient(110deg, #cf9696 0 3px, #e1b7ad 3px 5px); }
+        .heart-icon { color: #bd827b; }
+        #scene-area {
+            margin: 20px 24px 28px;
+            border: 8px solid #fffdf7;
+            outline: 1px solid #baaf9c;
+            border-radius: 2px 5px 3px 6px;
+            box-shadow: 3px 5px 0 #b6a88e35;
+            isolation: isolate;
+        }
+        #scene-area::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            border: 1px solid #8e81674d;
+            background: radial-gradient(#7d6c4417 .65px, transparent .9px);
+            background-size: 4px 4px;
+        }
+        #scene-area.video-scene { background: #423d35 !important; }
+        #scene-area.art-room-portrait {
+            height: auto;
+            aspect-ratio: 3 / 2;
+            min-height: 0;
+        }
+        .art-room-portrait #char-su { height: auto; padding-bottom: 12px; background: transparent !important; }
+        .art-room-portrait #char-su .character-avatar { display: none; }
+        #scene-name {
+            top: 14px; left: 14px;
+            border: 1px solid #b5a68c;
+            background: #fff8e5ed;
+            border-radius: 2px 5px 3px 4px;
+            color: #665743;
+            transform: rotate(-2deg);
+            box-shadow: 2px 2px 0 #574d3920;
+        }
+        #scene-name::before { content: "✎ "; }
+        .character { width: 27%; max-width: 160px; height: 240px; border-radius: 48% 44% 9px 8px; z-index: 2; }
+        #char-shen { left: 5%; }
+        #char-lu { left: 36.5%; }
+        #char-su { right: 5%; }
+        .character-avatar {
+            width: 92px; height: 96px;
+            border: 2px solid #8c7e69;
+            outline: 1px dashed #b2a087;
+            outline-offset: 4px;
+            border-radius: 47% 53% 45% 55% / 54% 45% 55% 46%;
+            background: #fff9eb;
+            box-shadow: 3px 4px 0 #8f7b6126;
+            transform: rotate(-4deg);
+        }
+        #char-lu .character-avatar { transform: rotate(4deg); }
+        .character-name { text-align: center; padding: 5px 8px; border: 1px solid #b6a58e; border-radius: 3px 5px 2px 4px; background: #fff9e9f0; color: #62523f; line-height: 1.5; transform: rotate(-2deg); }
+        #dialog-box {
+            height: auto; min-height: 166px;
+            margin: 24px; padding: 25px 25px 35px;
+            border: 2px solid #a89880;
+            border-radius: 7px 4px 9px 5px / 5px 8px 4px 7px;
+            background: repeating-linear-gradient(transparent 0 30px, #bbcad330 30px 31px), #fffdf5;
+            box-shadow: 3px 4px 0 #c0b39c3d;
+        }
+        #speaker-name {
+            top: -16px; left: 20px;
+            border: 1px solid #9b8b74;
+            border-radius: 3px 5px 2px 4px;
+            color: #493f32;
+            padding: 5px 18px;
+            transform: rotate(-2deg);
+            background: #edc5b9;
+        }
+        #dialog-text { color: var(--ink); font-size: 18px; line-height: 1.85; margin-top: 0; }
+        #tip { color: #9c8b70; right: 20px; bottom: 9px; }
+        #choices-container { padding: 0 24px 28px; gap: 13px; }
+        .choice-btn { background: #f6edda; padding: 13px 18px; font-size: 17px; line-height: 1.6; }
+        .choice-btn::before { content: "↳ "; color: #a08662; }
+        .choice-btn:nth-child(2n) { border-radius: 8px 5px 10px 4px / 4px 9px 5px 8px; background-color: #f5e8e0; }
+        #interaction-bubble { border: 1px solid #9c8a71; border-radius: 8px 5px 10px 4px; color: #62513f; background: #fff9e5; box-shadow: 2px 3px 0 #8e775630; z-index: 20; max-width: calc(100% - 24px); white-space: normal; }
+        #sports-video { border: 1px solid #b8a68d; border-radius: 3px; }
+        #sports-video-link { color: #ead8b5; text-underline-offset: 4px; }
+        @media (max-width: 600px) {
+            body { padding: 14px 10px; align-items: flex-start; }
+            #game-container { min-height: 700px; }
+            #start-screen { min-height: 700px; padding: 36px 20px; }
+            #start-screen h1 { font-size: 32px; max-width: 300px; }
+            #start-screen::before { font-size: 13px; letter-spacing: 2px; margin-bottom: 24px; }
+            #start-screen::after { font-size: 12px; letter-spacing: 0; }
+            #romance-btn { font-size: 15px; max-width: 100%; }
+            #favor-bar { padding: 14px 12px; gap: 12px; flex-wrap: wrap; }
+            .favor-item { flex: 1 1 28%; flex-wrap: wrap; justify-content: center; gap: 5px; }
+            .favor-track { width: 45px; }
+            .favor-name { font-size: 13px; min-width: 39px; }
+            .heart-icon { font-size: 12px; }
+            #scene-area { margin: 16px 14px 26px; height: 330px; border-width: 5px; }
+            #scene-area.couple-photo { height: 380px; }
+            .character { height: 190px; }
+            .character-avatar { width: 58px; height: 64px; font-size: 29px; }
+            .character-name { font-size: 12px; padding: 4px; }
+            #dialog-box { margin: 24px 14px 20px; padding: 24px 16px 36px; }
+            #dialog-text { font-size: 17px; }
+            #choices-container { padding: 0 14px 24px; }
+            .choice-btn { font-size: 16px; }
+        }
+        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- 开始界面 -->
+        <div id="start-screen">
+            <h1>完蛋！我被四班同学包围了</h1>
+            <p>🌸 樱华高中 · 高一四班恋爱物语 🌸</p>
+            <svg class="cover-sketch" viewBox="0 0 390 160" fill="none" aria-hidden="true">
+                <path d="M20 141 Q165 136 372 142" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                <path d="M94 137 L96 69 196 29 295 68 296 139" fill="#f2e7d0" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M83 72 L194 20 307 72 M91 77 L195 31 300 76" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+                <path d="M178 139 L178 108 Q194 103 210 108 L211 139" fill="#c5d4d2" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M112 84 L139 83 140 102 112 103 Z M249 83 L276 84 275 103 249 102 Z M112 115 L139 114 140 132 112 132 Z M249 114 L276 115 275 132 249 132 Z" fill="#d1dddb" stroke="currentColor" stroke-width="1.4"/>
+                <path d="M125 84 L126 102 M262 84 L262 102 M125 115 L126 132 M262 115 L262 132" stroke="currentColor"/>
+                <circle cx="195" cy="69" r="15" fill="#fff9e8" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M195 59 L195 70 204 75 M47 140 Q51 112 45 86 M44 115 L31 104 M47 105 L62 93 M338 139 L341 83 M340 112 L354 99" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                <path d="M22 85 Q16 66 37 65 Q37 47 54 56 Q72 46 76 65 Q94 76 76 88 Q66 104 51 92 Q31 105 22 85 Z M318 78 Q313 59 331 58 Q341 40 353 56 Q375 53 372 72 Q382 88 362 92 Q340 105 331 89 Q316 95 318 78 Z" fill="#e8c8bf" stroke="#b69a87" stroke-width="1.4"/>
+                <path d="M31 70 Q49 63 63 73 M329 66 Q343 58 360 70 M55 28 L59 20 M63 33 L73 31 M320 26 Q325 19 330 27 Q334 32 326 39 Q315 33 320 26" stroke="#bf9388" stroke-width="1.7" stroke-linecap="round"/>
+                <path d="M164 144 L157 156 M226 144 L233 155" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            <button id="start-btn">开始游戏</button>
+            <button id="romance-btn">直接体验 · 张正与曲嘉华的恋爱支线</button>
+            <button id="su-romance-btn" class="choice-btn">李逸鸿专属篇 · 画册里的你</button>
+            <button id="xu-romance-btn" class="choice-btn">徐一鸣专属篇 · 朋友圈之外</button>
+            <p class="story-note">校园故事纯属虚构，照片仅作角色配图。</p>
+        </div>
+
+        <!-- 好感度栏 -->
+        <div id="favor-bar" class="hidden">
+            <div class="favor-item">
+                <span class="favor-name">张 正</span>
+                <div class="favor-track"><div id="shen-fill" class="favor-fill"></div></div>
+                <span class="heart-icon">♥</span>
+            </div>
+            <div class="favor-item">
+                <span class="favor-name">曲嘉华</span>
+                <div class="favor-track"><div id="lu-fill" class="favor-fill"></div></div>
+                <span class="heart-icon">♥</span>
+            </div>
+            <div class="favor-item">
+                <span class="favor-name">李逸鸿</span>
+                <div class="favor-track"><div id="su-fill" class="favor-fill"></div></div>
+                <span class="heart-icon">♥</span>
+            </div>
+            <div class="favor-item">
+                <span class="favor-name">徐一鸣</span>
+                <div class="favor-track"><div id="xu-fill" class="favor-fill"></div></div>
+                <span class="heart-icon">♥</span>
+            </div>
+        </div>
+
+        <!-- 场景区域 -->
+        <div id="scene-area" class="hidden">
+            <div id="scene-name">樱花走廊</div>
+            <div id="sports-video-container" class="hidden">
+                <video id="sports-video" controls playsinline preload="metadata" aria-label="运动会现场视频"></video>
+                <a id="sports-video-link" target="_blank" rel="noopener">单独打开视频</a>
+            </div>
+            
+            <div id="char-shen" class="character hidden">
+                <div class="character-avatar" id="avatar-shen">🏃</div>
+                <div class="character-name">冷峻体委 · 张正</div>
+            </div>
+            
+            <div id="char-lu" class="character hidden">
+                <div class="character-avatar" id="avatar-lu">☀️</div>
+                <div class="character-name">四班吴彦祖 · 曲嘉华</div>
+            </div>
+            
+            <div id="char-su" class="character hidden">
+                <div class="character-avatar" id="avatar-su">🎀</div>
+                <div class="character-name">傲娇软萌 · 李逸鸿</div>
+            </div>
+
+            <div id="char-xu" class="character hidden">
+                <div class="character-avatar" id="avatar-xu">🥸</div>
+                <div class="character-name">朋友圈气氛组 · 徐一鸣</div>
+            </div>
+            <div id="interaction-bubble"></div>
+        </div>
+
+        <!-- 对话框 -->
+        <div id="dialog-box" class="hidden">
+            <div id="speaker-name"></div>
+            <div id="dialog-text"></div>
+            <div id="tip">点击对话继续 ▶</div>
+        </div>
+
+        <section id="moments-panel" class="hidden" aria-label="徐一鸣的虚构朋友圈"></section>
+        <!-- 选项区域 -->
+        <div id="choices-container" class="hidden"></div>
+    </div>
+
+    <script>
+    // =============================================================
+    // 【配置区 - 可自由修改，无需动下面逻辑】
+    // =============================================================
+
+    // -------------------- 1. 场景背景配置 --------------------
+    const SCENE_BG = {
+        "樱花走廊": "linear-gradient(180deg, #fff1f2 0%, #ffe4e6 100%)",
+        "高一四班教室": "linear-gradient(180deg, #fef3f7 0%, #fce7f3 100%)",
+        "91甜品店": "linear-gradient(180deg, #fff0f5 0%, #ffdbe9 100%)",
+        "美术室": "linear-gradient(180deg, #f3e8ff 0%, #e9d5ff 100%)",
+        "学校田径场": "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)",
+        "篮球馆": "linear-gradient(180deg, #ffedd5 0%, #fed7aa 100%)",
+        "运动会后勤区": "linear-gradient(180deg, #fef9c3 0%, #fef08a 100%)"
+    };
+
+    // 张正单人剧情背景：日常使用第一张，运动会使用第二张。
+    const ZHANG_ZHENG_BG = {
+        daily: "微信图片_20261017192426_2076_101.jpg",
+        sports: "微信图片_20261017192426_2077_101.jpg"
+    };
+
+    // 四班吴彦祖（曲嘉华）的单人剧情背景。
+    const QU_JIA_HUA_BG = {
+        daily: "微信图片_20261017192206_2018_101.jpg",
+        sports: "微信图片_20261017192206_2017_101.jpg"
+    };
+
+    // 李逸鸿的单人剧情背景。
+    const LI_YI_HONG_BG = "微信图片_20261016153343_2276_101.jpg";
+    const LI_YI_HONG_ART_BG = "li-yihong-art-room.png";
+    const XU_YI_MING_BG = {
+        smile: "微信图片_20261023204033_81_14.jpg",
+        victory: "微信图片_20261023204033_82_14.jpg",
+        double: "微信图片_20261023204033_83_14.jpg"
+    };
+
+    const COUPLE_BG = {
+        flower: "微信图片_20261016155501_2426_101.jpg",
+        answer: "微信图片_20261016155501_2425_101.jpg"
+    };
+
+    // -------------------- 2. 角色配置 --------------------
+    const CHARACTERS = {
+        shen: {
+            name: "张正",
+            avatar: "🏃",
+            color: "#a5bec5",
+            // 点击角色触发的随机互动台词
+            interactions: [
+                "……怎么了？",
+                "运动会报名单填好了给我。",
+                "（他耳尖微微泛红，别过脸）",
+                "草莓牛奶……你要喝吗？",
+                "热身要做充分，不然容易拉伤。",
+                "……跳舞的事，不准和别人说。"
+            ]
+        },
+        lu: {
+            name: "曲嘉华",
+            avatar: "☀️",
+            color: "#ddc18d",
+            interactions: [
+                "看什么呢 ？",
+                "放学要不要去看我打篮球？",
+                "哟，主动找我啊？",
+                "双倍珍珠奶茶，请你。",
+                "等会儿赢了把奖牌给你。",
+                "老张跳舞那段我拍了，要看不？"
+            ]
+        },
+        su: {
+            name: "李逸鸿",
+            avatar: "🎀",
+            color: "#d6aaa1",
+            interactions: [
+                "你、你戳我干嘛！",
+                "才、才不是特意给你留的草莓糖！",
+                "别盯着我看啦……",
+                "哼，乐乐。",
+                "后勤好忙啊……你能来帮我吗？",
+                "张正跳舞的时候……你也看到了对吧？"
+            ]
+        },
+        xu: {
+            name: "徐一鸣", avatar: "🥸", color: "#bdc9a5",
+            interactions: [
+                "小胡子是辨识度，笑容才是主打。",
+                "这张双手比耶，配什么文案比较好？",
+                "今天朋友圈先不发了，想听你当面说。",
+                "别只顾点赞，放学一起走一段？",
+                "照片发之前，我会先问你同不同意。",
+                "我负责活跃气氛，你负责开心就好。"
+            ]
+        }
+    };
+
+    // -------------------- 3. 剧情对话配置 --------------------
+    const story = {
+        // ========== 序章 ==========
+        "intro1": {
+            scene: "樱花走廊",
+            speaker: "",
+            text: "三月的风裹着樱花的香气吹过走廊，你抱着沉甸甸的书包一路小跑——高一入学第一天可不能迟到！",
+            chars: [],
+            next: "intro2"
+        },
+        "intro2": {
+            scene: "樱花走廊",
+            speaker: "",
+            text: "转角处没留神，你迎面撞上了一个同学，书本哗啦散了一地。",
+            chars: ["shen"],
+            next: "shen_1"
+        },
+        "shen_1": {
+            scene: "樱花走廊",
+            speaker: "张正",
+            text: "……没事吧。",
+            chars: ["shen"],
+            next: "shen_2"
+        },
+        "shen_2": {
+            scene: "樱花走廊",
+            speaker: "",
+            text: "清冷的声音像山涧的泉水。你抬头撞进一双丹凤眼里，男生微微皱眉，弯腰帮你捡起散落的课本，指尖碰到你的手背，凉得像樱花花瓣。",
+            chars: ["shen"],
+            next: "shen_3"
+        },
+        "shen_3": {
+            scene: "樱花走廊",
+            speaker: "张正",
+            text: "高一四班在二楼尽头。",
+            chars: ["shen"],
+            next: "lu_1"
+        },
+        "lu_1": {
+            scene: "樱花走廊",
+            speaker: "",
+            text: "他抱着书转身离开，背影挺拔疏离。。",
+            chars: ["lu"],
+            next: "lu_2"
+        },
+        "lu_2": {
+            scene: "樱花走廊",
+            speaker: "曲嘉华",
+            text: "哟，新同学？我帅吗。",
+            chars: ["lu"],
+            next: "lu_3"
+        },
+        "lu_3": {
+            scene: "樱花走廊",
+            speaker: "",
+            text: "少年靠在栏杆上笑，校服外套随意搭在肩头，阳光落在他的虎牙上，晃得人眼花。这张脸帅得过分，难怪被叫做“四班吴彦祖”。",
+            chars: ["lu"],
+            next: "class_1"
+        },
+        "class_1": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "你慌忙跑进教室，没注意到角落的座位上，一个软乎乎的少年正皱着眉偷偷看你。",
+            chars: ["su"],
+            next: "su_1"
+        },
+        "su_1": {
+            scene: "高一四班教室",
+            speaker: "李逸鸿",
+            text: "……笨手笨脚的，你怎么冒冒失失的。",
+            chars: ["su"],
+            next: "su_2"
+        },
+        "su_2": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "他小声嘀咕着，飞快收回目光假装翻画册，耳尖却悄悄泛起了粉色。娃娃脸配着圆溜溜的眼睛，像只害羞的小野猫。",
+            chars: ["su"],
+            next: "self_intro"
+        },
+        "self_intro": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "班主任示意你上台自我介绍。全班的目光都聚焦在你身上，深吸一口气，你开口说道——",
+            chars: ["shen", "lu", "su"],
+            choices: [
+                { text: "（紧张鞠躬）大家好！我是新来的你，请多关照！", favor: { su: 5 }, next: "intro_end_su" },
+                { text: "（平静点头）大家好，接下来请多指教。", favor: { shen: 5 }, next: "intro_end_shen" },
+                { text: "（笑着摆手）大家好～以后就是四班同学啦，多多照顾我呀！", favor: { lu: 5 }, next: "intro_end_lu" }
+            ]
+        },
+        "intro_end_su": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "你略显笨拙的样子惹得底下轻笑。角落的李逸鸿撇了撇嘴，心里却觉得你傻乎乎的有点可爱。",
+            chars: ["shen", "lu", "su"],
+            next: "chapter1"
+        },
+        "intro_end_shen": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "沉稳大方的自我介绍。第一排的张正抬了抬眼，指尖的钢笔微微顿了一下。",
+            chars: ["shen", "lu", "su"],
+            next: "chapter1"
+        },
+        "intro_end_lu": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "开朗的语气瞬间拉近距离。曲嘉华吹了声口哨，冲你比了个欢迎的手势。",
+            chars: ["shen", "lu", "su"],
+            next: "chapter1"
+        },
+
+        // ========== 第一章：四班的日常 ==========
+        "chapter1": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "【第一章 · 四班的日常】\n\n午休铃声响起，教室里渐渐热闹起来。你打算去哪里度过午休时光？",
+            chars: [],
+            choices: [
+                { text: "去校门口的甜品店买草莓牛乳", favor: { lu: 3 }, next: "dessert_shop" },
+                { text: "留在教室自习", favor: { shen: 3 }, next: "class_study" },
+                { text: "去美术室逛逛", favor: { su: 3 }, next: "art_room" },
+                { text: "找徐一鸣，看看他又发了什么朋友圈", favor: { xu: 3 }, next: "xu_start" }
+            ]
+        },
+        // 甜品店线
+        "dessert_shop": {
+            scene: "91店",
+            speaker: "",
+            text: "你来到校门口的甜品店，排队时身后有人轻轻拍了拍你的肩膀。",
+            chars: ["lu"],
+            next: "lu_dessert_1"
+        },
+        "lu_dessert_1": {
+            scene: "91甜品店",
+            speaker: "曲嘉华",
+            text: "好巧啊，你也爱喝这家？",
+            chars: ["lu"],
+            next: "lu_dessert_2"
+        },
+        "lu_dessert_2": {
+            scene: "91甜品店",
+            speaker: "",
+            text: "他叼着吸管笑，说：“自在极意豪，要不要喝我的牛奶”。",
+            chars: ["lu"],
+            choices: [
+                { text: "嗯！豪到我了！", favor: { lu: 2 }, next: "lu_pay" },
+                { text: "你也常来吗？", favor: { lu: 4 }, next: "lu_pay" }
+            ]
+        },
+        "lu_pay": {
+            scene: "91甜品店",
+            speaker: "曲嘉华",
+            text: "那你可来对了，我要款待你。",
+            chars: ["lu"],
+            next: "lu_pay_choice"
+        },
+        "lu_pay_choice": {
+            scene: "91甜品店",
+            speaker: "",
+            text: "他抬手就要来一发。你会？",
+            chars: ["lu"],
+            choices: [
+                { text: "连忙摆手：不用不用！我自己付就好", favor: { lu: 3 }, next: "lu_end_1" },
+                { text: "眼睛亮了亮：真的吗？谢谢！", favor: { lu: 8 }, next: "lu_end_2" },
+                { text: "歪头笑：那下次我请回你呀", favor: { lu: 10 }, next: "lu_end_3" }
+            ]
+        },
+        "lu_end_1": {
+            scene: "91甜品店",
+            speaker: "曲嘉华",
+            text: "行吧，还挺有原则。",
+            chars: ["lu"],
+            next: "chapter1_end"
+        },
+        "lu_end_2": {
+            scene: "91甜品店",
+            speaker: "曲嘉华",
+            text: "不客气～以后常来，哥请你的多着呢。",
+            chars: ["lu"],
+            next: "chapter1_end"
+        },
+        "lu_end_3": {
+            scene: "91甜品店",
+            speaker: "曲嘉华",
+            text: "哦？",
+            chars: ["lu"],
+            next: "lu_end_3_2"
+        },
+        "lu_end_3_2": {
+            scene: "91甜品店",
+            speaker: "",
+            text: "他愣了一下，随即笑得更灿烂，伸手揉了揉你的头发。",
+            chars: ["lu"],
+            next: "lu_end_3_3"
+        },
+        "lu_end_3_3": {
+            scene: "91甜品店",
+            speaker: "曲嘉华",
+            text: "行啊，那我可等着下次了。",
+            chars: ["lu"],
+            next: "chapter1_end"
+        },
+        // 教室自习线
+        "class_study": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "教室里只剩下零星几个人，阳光落在张正侧脸上，睫毛投下浅浅的阴影。",
+            chars: ["shen"],
+            next: "shen_study_1"
+        },
+        "shen_study_1": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "你走到他旁边的座位坐下，拿出课本。他似乎察觉到了，笔尖微微一顿。",
+            chars: ["shen"],
+            next: "shen_study_2"
+        },
+        "shen_study_2": {
+            scene: "高一四班教室",
+            speaker: "张正",
+            text: "……有不会的题可以问我。运动会想报什么项目也可以找我。",
+            chars: ["shen"],
+            next: "chapter1_end"
+        },
+        // 美术室线
+        "art_room": {
+            scene: "美术室",
+            speaker: "",
+            text: "美术室里堆满了画具，阳光透过窗户洒在画架上。李逸鸿穿着校服，戴着美术社活动用的猫耳发箍，手里握着画笔。听见门口的脚步声，他侧过身回头，脸上露出一点俏皮的笑意。",
+            chars: ["su"],
+            next: "su_art_1"
+        },
+        "su_art_1": {
+            scene: "美术室",
+            speaker: "李逸鸿",
+            text: "你、你怎么来这里了！",
+            chars: ["su"],
+            next: "su_art_2"
+        },
+        "su_art_2": {
+            scene: "美术室",
+            speaker: "",
+            text: "他吓了一跳，慌忙想擦掉脸上的颜料，反而越抹越花。",
+            chars: ["su"],
+            next: "su_art_choice"
+        },
+        "su_art_choice": {
+            scene: "美术室",
+            speaker: "",
+            text: "你忍不住笑出了声。",
+            chars: ["su"],
+            choices: [
+                { text: "你脸上有颜料，我爱你", favor: { su: 8 }, next: "su_end_1" },
+                { text: "你画得真好看", favor: { su: 6 }, next: "su_end_2" }
+            ]
+        },
+        "su_end_1": {
+            scene: "美术室",
+            speaker: "李逸鸿",
+            text: "不、不用！我自己来！",
+            chars: ["su"],
+            next: "su_end_1_2"
+        },
+        "su_end_1_2": {
+            scene: "美术室",
+            speaker: "",
+            text: "他猛地往后退，脸颊红得快要滴血，慌慌张张地跑掉了。",
+            chars: [],
+            choices: [
+                { text: "放学后再来，问问他需不需要帮忙", next: "su_love_start" },
+                { text: "先回教室，下次再聊", next: "chapter1_end" }
+            ]
+        },
+        "su_end_2": {
+            scene: "美术室",
+            speaker: "李逸鸿",
+            text: "哼……当、当然好看了！我可是小野猫。",
+            chars: ["su"],
+            next: "su_end_2_2"
+        },
+        "su_end_2_2": {
+            scene: "美术室",
+            speaker: "",
+            text: "他嘴上傲娇，尾巴却快要翘起来。",
+            chars: ["su"],
+            choices: [
+                { text: "约好放学后一起准备画展", next: "su_love_start" },
+                { text: "和他道别，先回教室", next: "chapter1_end" }
+            ]
+        },
+        "chapter1_end": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "午休很快结束了。\n\n🌸 第一章完 🌸",
+            chars: ["shen", "lu", "su"],
+            next: "chapter2_open"
+        },
+
+        // ========== 第二章：运动会大作战 ==========
+        "chapter2_open": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "【第二章 · 运动会大作战】\n\n周五的班会课，班主任拍着讲台宣布：下周学校首届高一运动会，每个班必须出开幕式集体节目，所有项目报名找体委张正。\n\n教室里瞬间炸开了锅。",
+            chars: ["shen", "lu", "su"],
+            next: "sports_opening"
+        },
+
+        // ----- 开幕式名场面：张正跳女团舞 -----
+        "sports_opening": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "运动会开幕式当天，彩旗飘满了整个操场。各班方队走完，就到了集体节目表演环节。\n\n轮到高一四班上场时，音乐一响，全场瞬间爆发出惊天动地的欢呼声。",
+            chars: [],
+            next: "sports_video_1"
+        },
+        "sports_video_1": {
+            scene: "运动会现场 · 视频 1 / 2",
+            speaker: "",
+            text: "运动会现场的精彩片段（一）。\n\n点击视频播放；看完后点击对话框，观看下一段。",
+            chars: [],
+            video: "d3bda0eccca0f3484e68d24bd7dfa1a3.mp4",
+            next: "sports_video_2"
+        },
+        "sports_video_2": {
+            scene: "运动会现场 · 视频 2 / 2",
+            speaker: "",
+            text: "运动会现场的精彩片段（二）。\n\n点击视频播放；看完后点击对话框，继续开幕式剧情。",
+            chars: [],
+            video: "de9eb98dbf17a124914b7ccff96b6973.mp4",
+            next: "sports_dance_1"
+        },
+        "sports_dance_1": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "一群穿着浅粉色表演服的女生中间，赫然站着身高一米八八的张正。\n\n作为体委，班上女生人数不够，他被班主任硬塞去凑人数站C位。动作虽然僵硬得像广播体操，却每一下都精准卡点，白暂的耳尖红得快要滴血，眼神全程飘向地面，一副“我是谁我在哪”的生无可恋。",
+            chars: ["shen"],
+            next: "sports_dance_2"
+        },
+        "sports_dance_2": {
+            scene: "学校田径场",
+            speaker: "曲嘉华",
+            text: "哈哈哈哈哈哈！绝了！我们张大体委太够意思了！为了班级荣誉献身啊！",
+            chars: ["lu"],
+            next: "sports_dance_3"
+        },
+        "sports_dance_3": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "曲嘉华在队伍旁边笑到直不起腰，举着手机疯狂录像。不远处的李逸鸿瞪圆了眼睛，手里的彩纸都掉在了地上。",
+            chars: ["lu", "su"],
+            next: "sports_dance_choice"
+        },
+        "sports_dance_choice": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "你看着台上一本正经跳女团舞的张正，心脏猛地跳了一下。",
+            chars: ["shen", "lu", "su"],
+            choices: [
+                { text: "忍不住笑出声，掏出手机偷偷拍", favor: { shen: 5, lu: 3 }, next: "dance_end_1" },
+                { text: "有点惊讶，但还是认真鼓掌加油", favor: { shen: 12 }, next: "dance_end_2" },
+                { text: "别过脸替他社死，假装没看见", favor: { shen: 8, su: 2 }, next: "dance_end_3" }
+            ]
+        },
+        "dance_end_1": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "你刚按下快门，台上的张正像是有感应似的，目光倏地扫过来，和你对上的瞬间，他动作僵了半拍，耳尖更红了。",
+            chars: ["shen"],
+            next: "dance_after"
+        },
+        "dance_end_2": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "你认认真真地拍着手，眼睛亮晶晶地看着台上。张正的目光扫过观众席，落到你身上时顿了顿，原本紧绷的嘴角似乎极淡地松了一下。",
+            chars: ["shen"],
+            next: "dance_after"
+        },
+        "dance_end_3": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "你故意扭过头看别处，耳朵却竖着听音乐。旁边的李逸鸿小声嘀咕“太美丽了太骚了”，却也偷偷用余光往台上瞟。",
+            chars: ["su"],
+            next: "dance_after"
+        },
+        "dance_after": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "一曲结束，全场掌声口哨声掀翻了天。张正几乎是逃着下场的，路过你身边时脚步顿了半秒。",
+            chars: ["shen"],
+            next: "dance_after_2"
+        },
+        "dance_after_2": {
+            scene: "学校田径场",
+            speaker: "张正",
+            text: "……不许笑。",
+            chars: ["shen"],
+            next: "dance_after_3"
+        },
+        "dance_after_3": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "他声音压得很低，耳尖红得快要滴血，丢下三个字就快步走了，背影都透着一股仓皇。",
+            chars: [],
+            next: "chapter2_choices"
+        },
+
+        // ----- 运动会分支选择 -----
+        "chapter2_choices": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "开幕式告一段落，下午各项比赛正式开始。你打算去哪里？",
+            chars: [],
+            choices: [
+                { text: "去田径场看看，张正的1000米快开始了", favor: { shen: 5 }, next: "sports_shen_1" },
+                { text: "去篮球馆找曲嘉华，他有小组赛", favor: { lu: 5 }, next: "sports_lu_1" },
+                { text: "留在后勤组跟李逸鸿表演小野猫", favor: { su: 5 }, next: "sports_su_1" }
+            ]
+        },
+
+        // ----- 运动会：张正线 -----
+        "sports_shen_1": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "午后的田径场晒得人发晕，跑道上张正正在做热身，额前的碎发沾着汗珠。",
+            chars: ["shen"],
+            next: "sports_shen_2"
+        },
+        "sports_shen_2": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "他压腿的动作顿了顿，抬眼看到了你。你手里刚好拿着一瓶冰水。",
+            chars: ["shen"],
+            choices: [
+                { text: "走过去把水递给他", favor: { shen: 10 }, next: "sports_shen_3a" },
+                { text: "远远放在看台上，不打扰他热身", favor: { shen: 6 }, next: "sports_shen_3b" }
+            ]
+        },
+        "sports_shen_3a": {
+            scene: "学校田径场",
+            speaker: "张正",
+            text: "……你怎么来了。",
+            chars: ["shen"],
+            next: "sports_shen_4a"
+        },
+        "sports_shen_4a": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "他看到你递过来的水，愣了两秒才伸手接过，指尖碰到你的手，比平时凉一点。",
+            chars: ["shen"],
+            next: "sports_shen_5"
+        },
+        "sports_shen_3b": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "你悄悄把水放在他外套旁边，刚转身要走，身后传来清冷的声音。",
+            chars: ["shen"],
+            next: "sports_shen_4b"
+        },
+        "sports_shen_4b": {
+            scene: "学校田径场",
+            speaker: "张正",
+            text: "……站住。",
+            chars: ["shen"],
+            next: "sports_shen_5"
+        },
+        "sports_shen_5": {
+            scene: "学校田径场",
+            speaker: "张正",
+            text: "比赛结束……等我一下。",
+            chars: ["shen"],
+            next: "sports_shen_end"
+        },
+        "sports_shen_end": {
+            scene: "学校田径场",
+            speaker: "",
+            text: "他别过脸，耳尖泛着淡淡的红。风吹过跑道，扬起他额前的碎发。\n\n（张正好感度上升了）",
+            chars: ["shen"],
+            next: "chapter2_end"
+        },
+
+        // ----- 运动会：曲嘉华线 -----
+        "sports_lu_1": {
+            scene: "篮球馆",
+            speaker: "",
+            text: "篮球馆里人声鼎沸，曲嘉跃起投篮的瞬间引来看台一片尖叫。",
+            chars: ["lu"],
+            next: "sports_lu_2"
+        },
+        "sports_lu_2": {
+            scene: "篮球馆",
+            speaker: "",
+            text: "中场休息时他一眼就看到了你，甩着毛巾走过来，额角的汗珠顺着下颌线滑落。",
+            chars: ["lu"],
+            next: "sports_lu_3"
+        },
+        "sports_lu_3": {
+            scene: "篮球馆",
+            speaker: "曲嘉华",
+            text: "哟，专门来看我打球？",
+            chars: ["lu"],
+            choices: [
+                { text: "才不是，顺路过来看看", favor: { lu: 5 }, next: "sports_lu_4a" },
+                { text: "嗯！来给你加油呀", favor: { lu: 10 }, next: "sports_lu_4b" }
+            ]
+        },
+        "sports_lu_4a": {
+            scene: "篮球馆",
+            speaker: "曲嘉华",
+            text: "嘴硬什么啊，眼睛都亮了。",
+            chars: ["lu"],
+            next: "sports_lu_5"
+        },
+        "sports_lu_4b": {
+            scene: "篮球馆",
+            speaker: "曲嘉华",
+            text: "哦？那我可得好好打。",
+            chars: ["lu"],
+            next: "sports_lu_5"
+        },
+        "sports_lu_5": {
+            scene: "篮球馆",
+            speaker: "曲嘉华",
+            text: "对你比出zmjjkk手势。",
+            chars: ["lu"],
+            next: "sports_lu_end"
+        },
+        "sports_lu_end": {
+            scene: "篮球馆",
+            speaker: "",
+            text: "他冲你挑了挑眉，转身跑回球场，背影带着藏不住的笑意。\n\n（曲嘉华好感度上升了）",
+            chars: ["lu"],
+            next: "chapter2_end"
+        },
+
+        // ----- 运动会：李逸鸿线 -----
+        "sports_su_1": {
+            scene: "运动会后勤区",
+            speaker: "",
+            text: "后勤区的桌子上堆满了彩纸和颜料，李逸鸿正站在梯子上贴宣传横幅，小脸红扑扑的。",
+            chars: ["su"],
+            next: "sports_su_2"
+        },
+        "sports_su_2": {
+            scene: "运动会后勤区",
+            speaker: "李逸鸿",
+            text: "呜……这边够不到……",
+            chars: ["su"],
+            next: "sports_su_3"
+        },
+        "sports_su_3": {
+            scene: "运动会后勤区",
+            speaker: "",
+            text: "他踮着脚晃了晃，眼看就要站不稳。",
+            chars: ["su"],
+            choices: [
+                { text: "赶紧过去扶住梯子", favor: { su: 10 }, next: "sports_su_4a" },
+                { text: "喊他小心一点", favor: { su: 5 }, next: "sports_su_4b" }
+            ]
+        },
+        "sports_su_4a": {
+            scene: "运动会后勤区",
+            speaker: "李逸鸿",
+            text: "呀！",
+            chars: ["su"],
+            next: "sports_su_5a"
+        },
+        "sports_su_5a": {
+            scene: "运动会后勤区",
+            speaker: "",
+            text: "他吓了一跳，低头看到是你，脸颊瞬间红透了，慌慌张张从梯子上爬下来。",
+            chars: ["su"],
+            next: "sports_su_6"
+        },
+        "sports_su_4b": {
+            scene: "运动会后勤区",
+            speaker: "李逸鸿",
+            text: "我、我才不会摔下去！",
+            chars: ["su"],
+            next: "sports_su_6"
+        },
+        "sports_su_6": {
+            scene: "运动会后勤区",
+            speaker: "李逸鸿",
+            text: "……你、你是来帮忙的吗？",
+            chars: ["su"],
+            next: "sports_su_end"
+        },
+        "sports_su_end": {
+            scene: "运动会后勤区",
+            speaker: "",
+            text: "他揪着衣角，声音小小的，眼睛却亮晶晶地看着你。\n\n（李逸鸿好感度上升了）",
+            chars: ["su"],
+            choices: [
+                { text: "留下来收拾，听他讲讲画展的事", next: "su_love_start" },
+                { text: "收拾完去找其他同学", next: "chapter2_end" }
+            ]
+        },
+
+        "chapter2_end": {
+            scene: "高一四班教室",
+            speaker: "",
+            text: "运动会的汗水与笑声洒满校园。收拾物资时，你发现曲嘉华把一朵白玫瑰藏在身后，而张正正向他走来。\n\n🌸 第二章完 · 点击进入第三章「风把心事告诉你」🌸",
+            chars: ["shen", "lu", "su"],
+            next: "romance_start"
+        }
+    };
+
+    // 原创虚构支线：照片仅作游戏配图，剧情不代表现实人物关系。
+    Object.assign(story, {
+        romance_start: {
+            scene: "学校田径场", chars: ["shen", "lu"],
+            text: "【第三章 · 风把心事告诉你】\n（曲嘉华拿着白玫瑰站在看台边。张正嘴上问他怎么还没走，却顺手接过了他沉甸甸的书包。你决定……",
+            choices: [
+                { text: "陪他们收拾器材，听听两人的心事", next: "romance_equipment" },
+                { text: "拉上李逸鸿，准备一场小小的助攻", next: "romance_helper" },
+                { text: "给他们留点空间，去买三瓶水", next: "romance_water" }
+            ]
+        },
+        romance_equipment: {
+            scene: "学校田径场", chars: ["shen", "lu"], speaker: "曲嘉华",
+            text: "“体委，你今天跑完步，第一个找的是谁？”\n张正把接力棒放回箱子，过了一会儿才说：“……你不就在终点吗。”\n曲嘉华低下头笑了。",
+            choices: [
+                { text: "笑着说：那下次还在终点等他吧", next: "romance_promise" },
+                { text: "帮忙搬走箱子，让他们慢慢聊", next: "romance_quiet" },
+                { text: "问曲嘉华：那朵花，是准备送给谁的？", next: "romance_flower" }
+            ]
+        },
+        romance_helper: {
+            scene: "运动会后勤区", chars: ["su"], speaker: "李逸鸿",
+            text: "“我画的加油牌，张正一直带着。可他刚才说，是因为曲嘉华在背面写了字。”\n李逸鸿把画笔收好：“帮忙可以，别替他们做决定。你想怎么帮？”",
+            choices: [
+                { text: "把两个人都叫来，一起收拾最后一箱物资", next: "romance_equipment" },
+                { text: "准备两杯热可可，等他们聊完送过去", next: "romance_cocoa" },
+                { text: "先不安排，让他们自然相处", next: "romance_quiet" }
+            ]
+        },
+        romance_water: {
+            scene: "学校田径场", chars: ["shen", "lu"],
+            text: "等你买水回来，张正已经把外套搭在曲嘉华肩上。\n“风大。”他解释得很简短。\n曲嘉华拢了拢衣领：“那我明天还你，你得等我一起放学。”",
+            choices: [
+                { text: "把水放下：明天也一起走吧", next: "romance_promise" },
+                { text: "递上水，安静听他们说话", next: "romance_quiet" },
+                { text: "提醒曲嘉华：你还藏着一朵花呢", next: "romance_flower" }
+            ]
+        },
+        romance_cocoa: {
+            scene: "91甜品店", chars: ["shen", "lu"], speaker: "张正",
+            text: "张正接过热可可，先把不太烫的那杯递给曲嘉华。\n“你不是说今天嗓子不舒服？”\n曲嘉华怔了一下：“我随口说的，你还记得啊。”",
+            next: "romance_promise"
+        },
+        romance_promise: {
+            scene: "樱花走廊", chars: ["shen", "lu"], speaker: "张正",
+            text: "“明天可以，后天也可以。”\n张正看着曲嘉华，补上一句：“你想一起走的时候，都可以来找我。”\n走廊忽然安静下来，曲嘉华把手里的花握得更紧了。",
+            next: "romance_flower"
+        },
+        romance_quiet: {
+            scene: "学校田径场", chars: ["shen", "lu"],
+            text: "你退到看台另一边。曲嘉华没有再开玩笑，认真叫了声张正的名字。\n张正停下手里的动作：“嗯，我在听。”\n这次，他终于把藏在身后的白玫瑰拿了出来。",
+            next: "romance_flower"
+        },
+        romance_flower: {
+            scene: "看台边的白玫瑰", chars: ["shen", "lu"], photo: "flower",
+            text: "曲嘉华蹲下整理鞋带，抬头时把白玫瑰递向张正。\n“本来想说是祝贺你跑完比赛的。但其实……我想送花给你，很久了。”\n你站在稍远的地方，决定……",
+            choices: [
+                { text: "收起手机，把这个时刻留给他们", next: "romance_confession" },
+                { text: "轻声问：要我帮你们拍张纪念照吗？", next: "romance_photo_permission" },
+                { text: "先去帮李逸鸿搬东西，稍后再回来", next: "romance_step_away" }
+            ]
+        },
+        romance_photo_permission: {
+            scene: "看台边的白玫瑰", chars: ["shen", "lu"], photo: "flower",
+            text: "“等一下。”张正轻轻摇头，“我想先听他说完。”\n你点头放下手机。曲嘉华深吸一口气，终于不再用玩笑掩饰紧张。",
+            next: "romance_confession"
+        },
+        romance_step_away: {
+            scene: "运动会后勤区", chars: ["su"], speaker: "李逸鸿",
+            text: "李逸鸿接过你搬来的纸箱，朝看台看了一眼：“不用急着回去，让他们好好说。”\n等你们收拾完，两个人并肩走来。曲嘉华轻声问：“想听我们刚才说了什么吗？”",
+            choices: [
+                { text: "愿意说的话，我很想听", next: "romance_confession" },
+                { text: "不用告诉我细节，祝你们开心就好", next: "romance_private_end" }
+            ]
+        },
+        romance_confession: {
+            scene: "白玫瑰的回答", chars: ["shen", "lu"], photo: "answer", speaker: "曲嘉华",
+            text: "“张正，我喜欢你。不是因为你是体委，也不是今天气氛刚好。”\n“是每天都想跟你一起走，看到好玩的事，第一个就想告诉你。”\n他停了一下：“你不用急着回答。”",
+            next: "romance_answer"
+        },
+        romance_answer: {
+            scene: "白玫瑰的回答", chars: ["shen", "lu"], photo: "answer", speaker: "张正",
+            text: "张正接过花，耳尖红了，却没有躲开他的目光。\n“我也喜欢你。”\n“我不太会说这些……但明天、后天，还有以后，我都想和你一起走。”\n曲嘉华笑起来：“那就说好了。”",
+            choices: [
+                { text: "送上祝福：要不要一起去甜品店庆祝？", next: "romance_date" },
+                { text: "笑着挥手：你们去散步吧，我来收尾", next: "romance_walk" },
+                { text: "问他们：现在可以拍一张纪念照了吗？", next: "romance_photo" }
+            ]
+        },
+        romance_date: {
+            scene: "91甜品店", chars: ["shen", "lu"],
+            text: "曲嘉华把菜单推到张正面前：“第一次约会，你选。”\n张正认真看了半天：“你不是一直想试我的龟头？”\n你和李逸鸿坐在隔壁桌，交换了一个会心的笑。",
+            choices: [
+                { text: "推荐双人松饼，让他们一起分享", next: "romance_sweet_end" },
+                { text: "让他们慢慢选，和李逸鸿先走一步", next: "romance_private_end" },
+                { text: "提议以后每次运动会都来这里庆祝", next: "romance_tradition_end" }
+            ]
+        },
+        romance_walk: {
+            scene: "樱花走廊", chars: ["shen", "lu"],
+            text: "夕阳把两个人的影子拉得很长。\n曲嘉华问：“以后也在终点等你？”\n张正摇摇头，伸出手：“以后一起走。”\n曲嘉华笑着握住了他的手。",
+            next: "romance_private_end"
+        },
+        romance_photo: {
+            scene: "我们的纪念照", chars: ["shen", "lu"], photo: "answer",
+            text: "“可以。”两个人一起点头。\n张正拿着花，曲嘉华站到他身边。快门响起时，两个人都在笑。\n曲嘉华说：“照片先留给我们自己吧。”你答应下来。",
+            choices: [
+                { text: "把照片发给他们，送上祝福", next: "romance_sweet_end" },
+                { text: "约好明年运动会再拍一张", next: "romance_tradition_end" },
+                { text: "让他们选自己最喜欢的一张作纪念", next: "romance_private_end" }
+            ]
+        },
+        romance_sweet_end: {
+            scene: "属于两个人的晴天", chars: ["shen", "lu"], photo: "flower",
+            text: "【结局 · 白玫瑰与草莓松饼】\n张正学会把心事说出口，曲嘉华也终于等到了认真的回答。\n放学后，甜品店多了两位总是一起出现的客人。\n🌸 第三章完 · 谢谢你的温柔助攻。",
+            choices: [{ text: "重玩第三章，试试其他选择", next: "romance_start" }, { text: "从故事开头重新开始（保留好感度）", next: "intro1" }]
+        },
+        romance_private_end: {
+            scene: "属于两个人的晴天", chars: ["shen", "lu"], photo: "answer",
+            text: "【结局 · 并肩走过的晚风】\n有些心事不用告诉全世界。\n从那天起，张正身边总有一个会等他的人，曲嘉华也不必再把喜欢藏进玩笑。\n🌸 第三章完 · 他们的故事，在每天的放学路上继续。",
+            choices: [{ text: "重玩第三章，试试其他选择", next: "romance_start" }, { text: "从故事开头重新开始（保留好感度）", next: "intro1" }]
+        },
+        romance_tradition_end: {
+            scene: "属于两个人的晴天", chars: ["shen", "lu"], photo: "flower",
+            text: "【结局 · 明年也一起】\n曲嘉华把纪念日记进日历，张正在旁边添了一句：“明年的运动会，一起报名。”\n那朵白玫瑰被夹进了书里，而新的约定，正在慢慢开花。\n🌸 第三章完 · 下一次终点见。",
+            choices: [{ text: "重玩第三章，试试其他选择", next: "romance_start" }, { text: "从故事开头重新开始（保留好感度）", next: "intro1" }]
+        }
+    });
+
+    // 李逸鸿专属篇：原创虚构校园故事。
+    Object.assign(story, {
+        su_love_start: {
+            scene: "美术室", chars: ["su"],
+            text: "【李逸鸿专属篇 · 画册里的你】\n周三放学，美术室的灯还亮着。李逸鸿正为校园画展整理作品，猫耳发箍被他放在颜料盒旁。\n看见你，他把一张画纸轻轻翻了过去：“先别看，还没画完。”",
+            next: "su_love_invite"
+        },
+        su_love_invite: {
+            scene: "美术室", chars: ["su"], speaker: "李逸鸿",
+            text: "“老师说可以找同学一起布展。”\n他用画笔敲了敲空椅子：“你有空吗？没有也没关系，我可以自己慢慢弄。”",
+            choices: [
+                { text: "有空，我来帮你排版，你负责画画", favor: { su: 3 }, next: "su_love_layout" },
+                { text: "我不太会画，可以帮你洗笔、整理颜料吗？", favor: { su: 3 }, next: "su_love_palette" },
+                { text: "今天要先回家，明天放学来找你好吗？", next: "su_love_tomorrow" }
+            ]
+        },
+        su_love_layout: {
+            scene: "美术室", chars: ["su"],
+            text: "你把标题挪到画纸左上角，又留出一块空白。\n李逸鸿凑近看了一会儿：“这里为什么不放东西？”\n“给看画的人喘口气。”你说。\n他笑出声：“你说得还挺像那么回事。”",
+            next: "su_love_sketch"
+        },
+        su_love_palette: {
+            scene: "美术室", chars: ["su"],
+            text: "你把洗净的画笔按粗细排好，留下那支笔杆上贴着小猫贴纸的。\n“这支是你最常用的吧？”\n李逸鸿点头，把椅子往旁边挪了一点：“你观察得还挺仔细。坐这里，别站着了。”",
+            next: "su_love_sketch"
+        },
+        su_love_tomorrow: {
+            scene: "高一四班教室", chars: ["su"],
+            text: "第二天放学，你按约定来找他。\n李逸鸿已经收好书包，却在桌上留了两颗草莓糖。\n“还以为你忘了。”他说着，把其中一颗推给你，“走吧，今天一起把标题写完。”",
+            next: "su_love_sketch"
+        },
+        su_love_sketch: {
+            scene: "美术室", chars: ["su"], speaker: "李逸鸿",
+            text: "“我想画放学后的教室，可总觉得少一点什么。”\n画纸上，窗帘被风吹起，两张课桌并排放着。其中一张椅子还是空的。\n“你觉得，那里应该画什么？”",
+            choices: [
+                { text: "画一个等朋友一起回家的人吧", favor: { su: 4 }, next: "su_love_waiting" },
+                { text: "可以画我吗？不过要先让我看看草稿", favor: { su: 4 }, next: "su_love_model" },
+                { text: "不急着填满，我陪你再想一想", favor: { su: 3 }, next: "su_love_silence" }
+            ]
+        },
+        su_love_waiting: {
+            scene: "美术室", chars: ["su"],
+            text: "“那等的人一直不来呢？”他问。\n“就先问问对方是不是有事。等人也得有个约定。”\n李逸鸿低头添了一只搭在椅背上的书包：“那以后我要等你，会先告诉你的。”",
+            next: "su_love_rain"
+        },
+        su_love_model: {
+            scene: "美术室", chars: ["su"], speaker: "李逸鸿",
+            text: "“可以。画好会先给你看，你同意了才放进画展。”\n他把速写本推过来，让你选喜欢的角度。\n你端端正正坐下，反倒把他逗笑了：“不用像拍证件照，平时的样子就好。”",
+            next: "su_love_rain"
+        },
+        su_love_silence: {
+            scene: "美术室", chars: ["su"],
+            text: "你们安静地坐了一会儿。窗外有人打球，球鞋擦过地面的声音隔着玻璃传进来。\n李逸鸿忽然动笔，在空椅子边添上另一只书包。\n“好像不一定要说很多话。”他轻轻说。",
+            next: "su_love_rain"
+        },
+        su_love_rain: {
+            scene: "樱花走廊", chars: ["su"],
+            text: "等你们收好画具，外面已经下起雨。李逸鸿抱着装画的文件袋，担心地看向校门。\n“画纸不能淋湿……你的伞带了吗？”",
+            choices: [
+                { text: "带了，我们一起走到车站吧", favor: { su: 3 }, next: "su_love_umbrella" },
+                { text: "先在走廊等雨小一点，聊聊你的画", favor: { su: 3 }, next: "su_love_rain_talk" },
+                { text: "我去借把伞，你在这里看好画", favor: { su: 3 }, next: "su_love_borrow" }
+            ]
+        },
+        su_love_umbrella: {
+            scene: "樱花走廊", chars: ["su"],
+            text: "你撑开伞，先确认文件袋放得稳不稳。李逸鸿抬手，把偏向他那侧的伞柄扶回中间。\n“你肩膀都要湿了。”\n你们放慢脚步，商量着哪条路积水更少。走到车站时，他小声说：“今天谢谢你陪我。”",
+            next: "su_love_exhibit"
+        },
+        su_love_rain_talk: {
+            scene: "樱花走廊", chars: ["su"], speaker: "李逸鸿",
+            text: "“以前我不太敢给别人看画，总怕他们觉得幼稚。”\n他望着檐下的雨：“可你每次都会认真看，还会问我为什么这样画。”\n雨渐渐小了。他把文件袋抱好：“明天布展，你还来吗？”",
+            next: "su_love_exhibit"
+        },
+        su_love_borrow: {
+            scene: "樱花走廊", chars: ["su"],
+            text: "值班老师借给你一把伞。等你回来，李逸鸿已经把你落下的书包也拿好了。\n“你去借伞，我帮你拿东西，正好。”\n你们约好第二天一起还伞。他又补了一句：“还有布展，别忘了。”",
+            next: "su_love_exhibit"
+        },
+        su_love_exhibit: {
+            scene: "美术室", chars: ["su"],
+            text: "画展当天，李逸鸿反复检查画框背后的挂钩。\n“如果没人喜欢怎么办？”他终于问出口。\n你看见他的参展卡上写着《放学后》，署名旁边还认真记下了你的布展协助。",
+            choices: [
+                { text: "我喜欢窗边的光，你把普通的一天画得很温柔", favor: { su: 4 }, next: "su_love_praise" },
+                { text: "紧张很正常。想让我陪你站一会儿吗？", favor: { su: 4 }, next: "su_love_stay" },
+                { text: "我们一起看看大家最先注意到画里的什么吧", favor: { su: 3 }, next: "su_love_viewers" }
+            ]
+        },
+        su_love_praise: {
+            scene: "美术室", chars: ["su"], speaker: "李逸鸿",
+            text: "“你连这里都看到了啊。”\n他指着画面边缘那一道浅浅的暖色：“其实我改了四次。总觉得那天放学的光，应该再亮一点。”\n他看了看你：“现在好像刚刚好。”",
+            next: "su_love_album"
+        },
+        su_love_stay: {
+            scene: "美术室", chars: ["su"],
+            text: "“想。”他这次没有嘴硬。\n你们一起站在作品旁，回答来看画的同学的问题。有人夸构图好看，李逸鸿慢慢挺直了背。\n人少下来后，他转向你：“刚才你在旁边，我安心很多。”",
+            next: "su_love_album"
+        },
+        su_love_viewers: {
+            scene: "美术室", chars: ["su"],
+            text: "有同学注意到窗帘，有人喜欢桌上的糖纸，还有人说想起了等朋友放学的时候。\n李逸鸿一条条记在小本子上，最后抬头笑了：“原来每个人看到的都不一样。”\n他把笔递给你：“你的感想，也想收一条。”",
+            next: "su_love_album"
+        },
+        su_love_album: {
+            scene: "美术室", chars: ["su"], speaker: "李逸鸿",
+            text: "画展结束，他从书包里取出一本小画册，却没有立刻递过来。\n“这里面还有几张没参展的画。你愿意看看吗？有些……是关于你的。”",
+            choices: [
+                { text: "愿意，你可以一页一页讲给我听", favor: { su: 3 }, next: "su_love_pages" },
+                { text: "等你准备好了再给我看，我不着急", favor: { su: 3 }, next: "su_love_ready" }
+            ]
+        },
+        su_love_pages: {
+            scene: "美术室", chars: ["su"],
+            text: "画册里有你整理画笔的背影，有走廊里等雨的窗台，还有课桌边两颗草莓糖。\n每页只记着日期和一小句话。\n翻到最后，他按住空白的一页：“接下来这张，我想先问过你。”",
+            next: "su_love_confession"
+        },
+        su_love_ready: {
+            scene: "樱花走廊", chars: ["su"],
+            text: "几天后，李逸鸿主动来找你。\n“我想好了，可以给你看。”\n你们坐在走廊长椅上。他翻开画册，把一起布展、等雨和分享糖果的片段慢慢讲给你听。最后，他停在空白的一页。",
+            next: "su_love_confession"
+        },
+        su_love_confession: {
+            scene: "樱花走廊", chars: ["su"], speaker: "李逸鸿",
+            text: "“我发现，我期待的已经不只是把画画完了。”\n“放学会想你今天来不来，看到喜欢的颜色，也想先给你看。”\n他深吸一口气：“我喜欢你。你不用现在就回答，我只是想认真告诉你。”",
+            choices: [
+                { text: "我也喜欢你。以后放学，我们一起走吧", favor: { su: 5 }, next: "su_love_mutual" },
+                { text: "我很在意你，但想再慢慢了解彼此", next: "su_love_slow" },
+                { text: "谢谢你告诉我。我更想和你做朋友", next: "su_love_friend" }
+            ]
+        },
+        su_love_mutual: {
+            scene: "樱花走廊", chars: ["su"], speaker: "李逸鸿",
+            text: "“真的？”他看着你，确认你点头后，才把一直握紧的画册放松。\n“那我可以……牵一下你的手吗？”\n你笑着把手伸过去。他轻轻握住，走了两步又停下：“等一下，我好像同手同脚了。”",
+            choices: [
+                { text: "周末一起去甜品店，庆祝画展完成", next: "su_love_date" },
+                { text: "留在这里，给画册一起画个新封面", next: "su_love_cover" },
+                { text: "今天先一起走回车站，把日常慢慢过好", next: "su_love_walk_end" }
+            ]
+        },
+        su_love_date: {
+            scene: "91甜品店", chars: ["su"],
+            text: "周末，你们各点了一份喜欢的甜点。李逸鸿把新做的小猫书签递给你，背面写着画展的日期。\n“不是随便画的，我试了好多次。”\n你把书签夹进随身的书里。他看见后，低头笑着挖了一大口松饼。",
+            next: "su_love_sweet_end"
+        },
+        su_love_cover: {
+            scene: "美术室", chars: ["su"],
+            text: "你画歪歪扭扭的小猫，他在旁边添上一只颜料罐。\n“谁说封面一定要画得很厉害？”他把两个人的名字并排写在角落，“我就喜欢这张。”\n你们决定把后面的空白页留给下一次一起经历的事。",
+            next: "su_love_album_end"
+        },
+        su_love_slow: {
+            scene: "樱花走廊", chars: ["su"], speaker: "李逸鸿",
+            text: "“好，我不催你。”\n他认真合上画册：“一起画画、一起回家，这些如果你也愿意，我们就继续。哪天想法变了，也可以直接告诉我。”\n你们约好下周再看一次新画展，先从彼此都舒服的相处开始。",
+            next: "su_love_slow_end"
+        },
+        su_love_friend: {
+            scene: "樱花走廊", chars: ["su"], speaker: "李逸鸿",
+            text: "他安静了一会儿，点点头：“谢谢你认真回答。我可能需要一点时间，但你没有做错什么。”\n几天后，他把布展时用的铅笔还给你：“下次美术社活动，如果你还想来，朋友也很欢迎。”",
+            next: "su_love_friend_end"
+        },
+        su_love_sweet_end: {
+            scene: "91甜品店", chars: ["su"],
+            text: "【结局 · 草莓糖的心事】\n那之后，你的书里多了一枚小猫书签。李逸鸿仍然会因为夸奖红耳朵，却开始坦然说出“今天想见你”。\n你们的约会很普通：画画、吃点心，赶在晚饭前各自回家。每一次都值得期待。",
+            choices: [{ text: "重玩李逸鸿专属篇", next: "su_love_start" }, { text: "回到主线，参加运动会", next: "chapter2_open" }]
+        },
+        su_love_album_end: {
+            scene: "美术室", chars: ["su"],
+            text: "【结局 · 一起画下的明天】\n画册有了一个不太规整的新封面，也有了两位作者。\n李逸鸿画窗边的光，你写那天发生的小事。你们约好，忙的时候先顾好学习，有空就慢慢填满下一页。",
+            choices: [{ text: "重玩李逸鸿专属篇", next: "su_love_start" }, { text: "回到主线，参加运动会", next: "chapter2_open" }]
+        },
+        su_love_walk_end: {
+            scene: "樱花走廊", chars: ["su"],
+            text: "【结局 · 放学后有人等你】\n你们没有突然变得很会谈恋爱，只是约好等人前先说一声，忙的时候不让对方空等。\n夕阳落在走廊尽头。李逸鸿背好书包，走到你身边：“今天也一起走？”\n“嗯，一起。”",
+            choices: [{ text: "重玩李逸鸿专属篇", next: "su_love_start" }, { text: "回到主线，参加运动会", next: "chapter2_open" }]
+        },
+        su_love_slow_end: {
+            scene: "美术室", chars: ["su"],
+            text: "【结局 · 尚未落笔的一页】\n你们没有急着给关系命名。新的画展、新的聊天，还有逐渐了解彼此的时间，都在前面。\n李逸鸿在画册的空白页上写下日期：“这一页，等我们都想好了再画。”",
+            choices: [{ text: "重玩李逸鸿专属篇", next: "su_love_start" }, { text: "回到主线，参加运动会", next: "chapter2_open" }]
+        },
+        su_love_friend_end: {
+            scene: "高一四班教室", chars: ["su"],
+            text: "【结局 · 画展的好搭档】\n喜欢被认真说出，也被认真回应。你们给彼此留出一点空间，后来仍然能自然地谈论画和课堂上的趣事。\n下一次布展时，李逸鸿问你：“老搭档，要不要再帮我看看标题？”",
+            choices: [{ text: "重玩李逸鸿专属篇", next: "su_love_start" }, { text: "回到主线，参加运动会", next: "chapter2_open" }]
+        }
+    });
+
+    // 徐一鸣专属篇。朋友圈文案及互动均为虚构剧情。
+    Object.assign(story, {
+        xu_start: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "smile",
+            text: "【徐一鸣专属篇 · 朋友圈之外】\n午休时，教室后排传来一阵笑声。徐一鸣转过椅子，笑得眼睛弯起来，嘴边那撮小胡子格外有辨识度。\n同学们说，他的小胡子和朋友圈文案，总有一种让人忍不住多看两眼的魅力。",
+            next: "xu_greeting"
+        },
+        xu_greeting: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "victory", speaker: "徐一鸣",
+            text: "“来得正好，帮我选张照片。”他举起一只手比耶，“这张是低调版，双手比耶那张是快乐加倍版。”\n“当然，小胡子两张都在线。”",
+            choices: [
+                { text: "先看看你的朋友圈，学习一下文案", favor: { xu: 3 }, next: "xu_feed" },
+                { text: "选笑得最自然的那张，不用装酷", favor: { xu: 3 }, next: "xu_natural" },
+                { text: "双手比耶！快乐怎么能只开一半", favor: { xu: 3 }, next: "xu_double" }
+            ]
+        },
+        xu_feed: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "smile", speaker: "徐一鸣",
+            text: "“欢迎参观我的快乐展览。”\n他给你看自己写的几条动态：有课堂后的碎碎念，也有一本正经的冷笑话。\n“文案可以夸张，开心倒是真的。你最喜欢哪条？”",
+            moments: [
+                { photo: "smile", caption: "今日营业：小胡子照常上班，烦恼提前下班。", time: "周一 · 放学后" },
+                { photo: "victory", caption: "作业写完一页，先给自己比个耶。剩下的继续努力。", time: "周二 · 晚自习前" },
+                { photo: "double", caption: "一个耶送给今天，一个耶送给明天。快乐不设单选题。", time: "周三 · 课间" }
+            ],
+            choices: [
+                { text: "“烦恼提前下班”这句，我先记住了", favor: { xu: 3 }, next: "xu_caption" },
+                { text: "我更喜欢照片里笑得很开心的你", favor: { xu: 4 }, next: "xu_natural" },
+                { text: "下次快乐加倍，算我一个", favor: { xu: 3 }, next: "xu_double" }
+            ]
+        },
+        xu_caption: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "smile",
+            text: "“那今天这条，送给你。”他在便签上写下那句话，又画了一撮歪歪的小胡子。\n你把便签夹进课本，他反而不好意思起来：“随手画的，没想到你真留着。”",
+            next: "xu_invite"
+        },
+        xu_natural: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "smile", speaker: "徐一鸣",
+            text: "“原来不加文案，也有人愿意看啊。”\n他收起刚才故作深沉的表情，笑了起来：“那这张不改了，就用原来的。”\n你发现，他认真听人说话的时候，比讲笑话时安静很多。",
+            next: "xu_invite"
+        },
+        xu_double: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "double",
+            text: "徐一鸣立刻举起两只手：“收到，快乐加倍！”\n你也比了个耶。他笑着把手机放下：“这次先不拍，光顾着摆姿势，差点忘了聊天。”",
+            next: "xu_invite"
+        },
+        xu_invite: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "victory", speaker: "徐一鸣",
+            text: "班里准备办一面“普通日子的快乐墙”，徐一鸣负责收照片和写说明。\n“你愿意一起做吗？要有人提醒我，别把每张照片都配成冷笑话。”",
+            choices: [
+                { text: "我帮你选照片，先听听每张背后的故事", favor: { xu: 3 }, next: "xu_photos" },
+                { text: "我来写文案，我们互相当编辑", favor: { xu: 3 }, next: "xu_edit" },
+                { text: "把李逸鸿也叫来，设计一块手绘标题", next: "xu_team" }
+            ]
+        },
+        xu_photos: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "double",
+            text: "他讲起一次没赢的球赛、同学帮忙捡起的作业本，还有一道终于算对的数学题。\n“这些也值得记下来？”你问。\n“当然。不是只有厉害的事，才配让人开心。”他说。",
+            next: "xu_quiet"
+        },
+        xu_edit: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "victory",
+            text: "你把他写的“全班最佳快乐代言人”改成“今天也有值得记录的小事”。\n徐一鸣读了两遍，点点头：“这句好，大家都能走进来。”\n他在草稿角落写上你的名字：“联合编辑，不能漏署名。”",
+            next: "xu_quiet"
+        },
+        xu_team: {
+            scene: "美术室", chars: ["shen", "lu", "su", "xu"],
+            text: "李逸鸿画标题，张正帮忙量尺寸，曲嘉华举着胶带找贴照片的位置。徐一鸣在旁边提议：“标题角落加一撮小胡子怎么样？”\n李逸鸿看了看你们，最后画了一张四个人都在笑的小涂鸦。",
+            next: "xu_quiet"
+        },
+        xu_quiet: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "smile", speaker: "徐一鸣",
+            text: "忙完以后，徐一鸣没有像平时那样立刻讲笑话。\n“有时大家都等着我逗他们开心，我也会想，今天要是没那么有精神，会不会扫兴。”\n他说完轻轻笑了一下：“是不是有点不像朋友圈里的我？”",
+            choices: [
+                { text: "你可以安静，我也愿意和你待着", favor: { xu: 4 }, next: "xu_listen" },
+                { text: "下次换我讲个冷笑话，你负责听", favor: { xu: 4 }, next: "xu_joke" },
+                { text: "不用每天都营业，先好好休息", favor: { xu: 3 }, next: "xu_rest" }
+            ]
+        },
+        xu_listen: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "smile",
+            text: "你们靠着走廊栏杆，看值日生把教室的灯一盏盏关掉。\n过了一会儿，徐一鸣才说：“这样也挺好。”\n他没再找话题，你也没有催他。放学后的风把那一点拘谨慢慢吹散。",
+            next: "xu_wall"
+        },
+        xu_joke: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "victory",
+            text: "你认真讲了一个连自己都觉得冷的笑话。徐一鸣先愣住，随后笑得停不下来。\n“不是笑话好笑，”他说，“是你讲完还一本正经等我评价。”\n他把便签递给你：“记下来，这条我想留着。”",
+            next: "xu_wall"
+        },
+        xu_rest: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "smile", speaker: "徐一鸣",
+            text: "“好，今天提前打烊。”他把手机放进书包，“谢谢你提醒我。”\n你们约好第二天再检查快乐墙，今晚各自回家吃饭、休息。\n临走前他回头：“明天见。不是群发，是跟你说的。”",
+            next: "xu_wall"
+        },
+        xu_wall: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "double",
+            text: "快乐墙完成了。有人停下来读文案，也有人认出照片里的朋友。\n徐一鸣站在你旁边，看着最角落那张你们一起选的照片：“这次最开心的，倒不是收到多少赞。”\n“是做这件事的时候，你一直在。”",
+            next: "xu_post_permission"
+        },
+        xu_post_permission: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "victory", speaker: "徐一鸣",
+            text: "“我想发一条动态，纪念我们一起做完快乐墙。”\n他先把文案给你看：“照片里有你。你愿意出镜吗？不愿意的话，我只拍作品就好。”",
+            choices: [
+                { text: "可以，发之前我们一起选照片", next: "xu_post_together" },
+                { text: "只拍快乐墙吧，我想把合照留给自己", next: "xu_post_wall" },
+                { text: "今天先不发了，去吃点心庆祝吧", next: "xu_celebrate" }
+            ]
+        },
+        xu_post_together: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "double",
+            text: "你们一起选好照片，确认文案没有写进不想公开的事。\n徐一鸣在结尾添了一句：“今天的快乐，有一位很棒的搭档。”\n手机收好后，他转向你：“有句话，我更想当面说。”",
+            next: "xu_confession"
+        },
+        xu_post_wall: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "smile", speaker: "徐一鸣",
+            text: "“好，只拍作品。”他很自然地调整镜头，没有劝你出镜。\n“有些开心不用发出来，自己知道也很好。”\n他把手机收好：“还有一件事，我想当面告诉你。”",
+            next: "xu_confession"
+        },
+        xu_celebrate: {
+            scene: "91甜品店", chars: ["xu"], xuPhoto: "victory",
+            text: "你们各自点好点心，聊起布展时贴歪的标题和用到最后一截的胶带。\n徐一鸣摸摸嘴边的小胡子，像在给自己打气：“今天先不当朋友圈气氛组。有句话，想认真跟你说。”",
+            next: "xu_confession"
+        },
+        xu_confession: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "smile", speaker: "徐一鸣",
+            text: "“以前发朋友圈，我想着怎么让大家开心。最近写好一句话，会先想你看到会不会笑。”\n“我喜欢你。不是想多收一个赞，是想多了解你一点，也让你看看不讲笑话的我。”\n他说完等着，没有拿玩笑把这句话带过去。",
+            choices: [
+                { text: "我也喜欢你，朋友圈之外的你也是", favor: { xu: 5 }, next: "xu_mutual" },
+                { text: "我想慢慢了解你，我们再多相处一些好吗？", next: "xu_slow_end" },
+                { text: "我很珍惜这段友谊，希望继续做搭档", next: "xu_friend_end" }
+            ]
+        },
+        xu_mutual: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "victory", speaker: "徐一鸣",
+            text: "他笑得眼睛弯起来，刚想比耶，又有点不好意思地放下手。\n“我现在是真的不知道怎么配文案了。”\n你说：“不用配，记住今天就好。”\n他点点头：“那放学后，有空一起走一段吗？”",
+            choices: [
+                { text: "一起走吧，今天的快乐不用发动态", next: "xu_private_end" },
+                { text: "周末去甜品店，轮流讲最冷的笑话", next: "xu_sweet_end" }
+            ]
+        },
+        xu_private_end: {
+            scene: "樱花走廊", chars: ["xu"], xuPhoto: "smile",
+            text: "【结局 · 朋友圈之外】\n那天徐一鸣没有发新动态。你们并肩走到车站，讨论明天的作业，也讨论下次想一起做的事。\n他的小胡子依旧很有辨识度，可你最喜欢的，是他说完一句认真话后等待回应的眼神。",
+            choices: [{ text: "重玩徐一鸣专属篇", next: "xu_start" }, { text: "回到四班日常", next: "chapter1" }]
+        },
+        xu_sweet_end: {
+            scene: "91甜品店", chars: ["xu"], xuPhoto: "double",
+            text: "【结局 · 快乐加倍】\n你们的第一次约会，以两份点心和三个冷笑话开场。徐一鸣认真记下你喜欢的口味，也记住你哪天要早点回家。\n他依旧爱比双手耶，只是现在，一份快乐留给自己，另一份想和你分享。",
+            choices: [{ text: "重玩徐一鸣专属篇", next: "xu_start" }, { text: "回到四班日常", next: "chapter1" }]
+        },
+        xu_slow_end: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "victory",
+            text: "【结局 · 明天继续聊】\n“好，我们慢慢来。”徐一鸣没有催你给出答案。\n你们继续分享笑话、认真听对方讲烦恼，也各自留出学习和休息的时间。\n下一次见面，他把手机放下：“今天想先听你说。”",
+            choices: [{ text: "重玩徐一鸣专属篇", next: "xu_start" }, { text: "回到四班日常", next: "chapter1" }]
+        },
+        xu_friend_end: {
+            scene: "高一四班教室", chars: ["xu"], xuPhoto: "double",
+            text: "【结局 · 快乐墙的老搭档】\n徐一鸣点点头：“谢谢你认真告诉我。我缓一缓，下次布展再找你。”\n后来他真的带着新草稿来找你。你们仍然能一起修改文案、为了一个冷笑话笑半天。\n朋友圈会更新，值得珍惜的友谊也会继续。",
+            choices: [{ text: "重玩徐一鸣专属篇", next: "xu_start" }, { text: "回到四班日常", next: "chapter1" }]
+        }
+    });
+
+    // =============================================================
+    // 【逻辑区 - 不建议修改】
+    // =============================================================
+
+    const gameState = {
+        favor: { shen: 0, lu: 0, su: 0, xu: 0 },
+        currentNode: null
+    };
+
+    const startScreen = document.getElementById('start-screen');
+    const startBtn = document.getElementById('start-btn');
+    const favorBar = document.getElementById('favor-bar');
+    const sceneArea = document.getElementById('scene-area');
+    const dialogBox = document.getElementById('dialog-box');
+    const choicesContainer = document.getElementById('choices-container');
+    const sceneName = document.getElementById('scene-name');
+    const speakerName = document.getElementById('speaker-name');
+    const dialogText = document.getElementById('dialog-text');
+    const bubble = document.getElementById('interaction-bubble');
+    const sportsVideoContainer = document.getElementById('sports-video-container');
+    const sportsVideo = document.getElementById('sports-video');
+    const sportsVideoLink = document.getElementById('sports-video-link');
+
+    const charElements = {
+        shen: document.getElementById('char-shen'),
+        lu: document.getElementById('char-lu'),
+        su: document.getElementById('char-su'),
+        xu: document.getElementById('char-xu')
+    };
+    const avatarElements = {
+        shen: document.getElementById('avatar-shen'),
+        lu: document.getElementById('avatar-lu'),
+        su: document.getElementById('avatar-su'),
+        xu: document.getElementById('avatar-xu')
+    };
+
+    function initCharacters() {
+        Object.keys(CHARACTERS).forEach(id => {
+            avatarElements[id].textContent = CHARACTERS[id].avatar;
+            charElements[id].style.background = `linear-gradient(180deg, transparent 15%, ${CHARACTERS[id].color}66)`;
+        });
+    }
+
+    function startGame(nodeId) {
+        startScreen.classList.add('hidden');
+        favorBar.classList.remove('hidden');
+        sceneArea.classList.remove('hidden');
+        dialogBox.classList.remove('hidden');
+        initCharacters();
+        renderNode(nodeId);
+    }
+
+    startBtn.addEventListener('click', () => startGame('intro1'));
+    document.getElementById('romance-btn').addEventListener('click', () => startGame('romance_start'));
+    document.getElementById('su-romance-btn').addEventListener('click', () => startGame('su_love_start'));
+    document.getElementById('xu-romance-btn').addEventListener('click', () => startGame('xu_start'));
+
+    function renderMoments(posts) {
+        const panel = document.getElementById('moments-panel');
+        panel.innerHTML = '';
+        panel.classList.toggle('hidden', !posts?.length);
+        if (!posts?.length) return;
+        const heading = document.createElement('h2');
+        heading.textContent = '徐一鸣的快乐展览';
+        panel.appendChild(heading);
+        const note = document.createElement('p');
+        note.className = 'moments-note';
+        note.textContent = '游戏内虚构动态 · 不连接真实社交账号';
+        panel.appendChild(note);
+        const grid = document.createElement('div');
+        grid.className = 'moments-grid';
+        posts.forEach(post => {
+            const card = document.createElement('article');
+            card.className = 'moment-card';
+            const img = document.createElement('img');
+            img.src = XU_YI_MING_BG[post.photo];
+            img.alt = '徐一鸣的校园生活配图';
+            const caption = document.createElement('p');
+            caption.textContent = post.caption;
+            const time = document.createElement('small');
+            time.textContent = post.time;
+            card.appendChild(img); card.appendChild(caption); card.appendChild(time);
+            grid.appendChild(card);
+        });
+        panel.appendChild(grid);
+    }
+
+    function renderNode(nodeId) {
+        const node = story[nodeId];
+        if (!node) return;
+        
+        gameState.currentNode = nodeId;
+        renderMoments(node.moments);
+        sceneArea.classList.toggle('four-characters', node.chars?.length === 4);
+        const isXuPortrait = Boolean(node.xuPhoto && XU_YI_MING_BG[node.xuPhoto] && !node.photo && !node.video);
+        sceneArea.classList.toggle('xu-portrait', isXuPortrait);
+
+        sportsVideo.pause();
+        sportsVideoContainer.classList.toggle('hidden', !node.video);
+        sceneArea.classList.toggle('video-scene', Boolean(node.video));
+        if (node.video) {
+            sportsVideo.setAttribute('src', node.video);
+            sportsVideo.setAttribute('aria-label', node.scene);
+            sportsVideoLink.href = node.video;
+            sportsVideo.load();
+        } else if (sportsVideo.hasAttribute('src')) {
+            sportsVideo.removeAttribute('src');
+            sportsVideo.load();
+            sportsVideoLink.removeAttribute('href');
+        }
+
+        sceneArea.classList.toggle('couple-photo', Boolean(node.photo));
+        const isArtRoomPortrait = node.scene === '美术室' && node.chars?.length === 1 && node.chars[0] === 'su' && !node.photo && !node.video;
+        sceneArea.classList.toggle('art-room-portrait', Boolean(isArtRoomPortrait));
+        
+        const isZhangZhengScene = node.chars?.length === 1 && node.chars[0] === 'shen';
+        if (node.photo && COUPLE_BG[node.photo]) {
+            sceneArea.style.background = `url("${COUPLE_BG[node.photo]}") center / contain no-repeat #dbeafe`;
+        } else if (isXuPortrait) {
+            sceneArea.style.background = `url("${XU_YI_MING_BG[node.xuPhoto]}") center / contain no-repeat #f4e8d2`;
+        } else if (isArtRoomPortrait) {
+            sceneArea.style.background = `url("${LI_YI_HONG_ART_BG}") center / contain no-repeat #f4e8d2`;
+        } else if (isZhangZhengScene) {
+            const photo = node.scene === '学校田径场' ? ZHANG_ZHENG_BG.sports : ZHANG_ZHENG_BG.daily;
+            sceneArea.style.background = `url("${photo}") center 38% / cover no-repeat`;
+        } else if (node.chars?.length === 1 && node.chars[0] === 'lu') {
+            const photo = nodeId.startsWith('sports_') ? QU_JIA_HUA_BG.sports : QU_JIA_HUA_BG.daily;
+            sceneArea.style.background = `url("${photo}") center 38% / cover no-repeat`;
+        } else if (node.chars?.length === 1 && node.chars[0] === 'su') {
+            sceneArea.style.background = `url("${LI_YI_HONG_BG}") center 25% / cover no-repeat`;
+        } else if (SCENE_BG[node.scene]) {
+            sceneArea.style.background = SCENE_BG[node.scene];
+        } else {
+            sceneArea.style.background = '#f5ecdd';
+        }
+        sceneName.textContent = node.scene;
+        
+        Object.values(charElements).forEach(el => el.classList.add('hidden'));
+        if (node.chars) {
+            node.chars.forEach(id => {
+                charElements[id].classList.remove('hidden');
+            });
+        }
+        
+        speakerName.textContent = node.speaker || "旁白";
+        const speakerCharacter = Object.values(CHARACTERS).find(char => char.name === node.speaker);
+        if (speakerCharacter) {
+            speakerName.style.background = speakerCharacter.color;
+        } else {
+            speakerName.style.background = "#edc5b9";
+        }
+        dialogText.textContent = node.text;
+        
+        choicesContainer.innerHTML = '';
+        choicesContainer.classList.add('hidden');
+        
+        if (node.choices && node.choices.length > 0) {
+            choicesContainer.classList.remove('hidden');
+            node.choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = choice.text;
+                btn.addEventListener('click', () => {
+                    if (choice.favor) {
+                        Object.keys(choice.favor).forEach(char => {
+                            gameState.favor[char] = Math.min(100, gameState.favor[char] + choice.favor[char]);
+                        });
+                        updateFavorBar();
+                    }
+                    renderNode(choice.next);
+                });
+                choicesContainer.appendChild(btn);
+            });
+        }
+    }
+
+    function updateFavorBar() {
+        Object.keys(CHARACTERS).forEach(id => {
+            document.getElementById(`${id}-fill`).style.width = gameState.favor[id] + '%';
+        });
+    }
+
+    dialogBox.addEventListener('click', (e) => {
+        if (e.target.closest('.choice-btn')) return;
+        const node = story[gameState.currentNode];
+        if (node && node.next && !node.choices) {
+            renderNode(node.next);
+        }
+    });
+
+    function showBubble(charId, element) {
+        const char = CHARACTERS[charId];
+        const randomLine = char.interactions[Math.floor(Math.random() * char.interactions.length)];
+        
+        const rect = element.getBoundingClientRect();
+        const containerRect = sceneArea.getBoundingClientRect();
+        
+        bubble.textContent = randomLine;
+        bubble.style.left = '0px';
+        bubble.style.top = '0px';
+        const bubbleLeft = rect.left - containerRect.left - sceneArea.clientLeft + rect.width / 2 - bubble.offsetWidth / 2;
+        bubble.style.left = Math.max(4, Math.min(sceneArea.clientWidth - bubble.offsetWidth - 4, bubbleLeft)) + 'px';
+        bubble.style.top = Math.max(55, rect.top - containerRect.top - sceneArea.clientTop - bubble.offsetHeight - 10) + 'px';
+        bubble.style.opacity = '1';
+        
+        gameState.favor[charId] = Math.min(100, gameState.favor[charId] + 1);
+        updateFavorBar();
+        
+        setTimeout(() => {
+            bubble.style.opacity = '0';
+        }, 1500);
+    }
+
+    Object.keys(charElements).forEach(id => {
+        charElements[id].addEventListener('click', () => showBubble(id, charElements[id]));
+    });
+
+    </script>
+</body>
+</html>

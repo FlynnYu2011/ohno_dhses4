@@ -1,0 +1,46 @@
+name: Build game packages
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Download project-local build tools
+        shell: pwsh
+        run: ./scripts/setup-build-tools.ps1
+      - name: Build and verify HTML, EXE and APK
+        shell: pwsh
+        run: ./scripts/build-all.ps1
+      - name: Save packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ohno_dhses4
+          path: |
+            dist/*.html
+            dist/*.exe
+            dist/*.apk
+            dist/*-source.zip
+            dist/SHA256SUMS.txt
+      - name: Publish tagged release
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view $env:GITHUB_REF_NAME --json tagName 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Output "Release already exists; preserving its uploaded packages and signing identity."
+            exit 0
+          }
+          gh release create $env:GITHUB_REF_NAME dist/ohno_dhses4.html dist/ohno_dhses4.exe dist/ohno_dhses4.apk dist/ohno_dhses4-source.zip dist/SHA256SUMS.txt --verify-tag --title "四班同学 $env:GITHUB_REF_NAME" --notes "包含徐一鸣专属篇、HTML 离线版、Windows WebView2 版及 Android 测试签名版。"

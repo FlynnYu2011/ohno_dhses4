@@ -1,0 +1,81 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const vm = require('node:vm');
+const source = path.resolve(process.argv[2] || 'dhses4.html');
+const html = fs.readFileSync(source, 'utf8');
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]);
+assert.equal(new Set(ids).size, ids.length, 'Duplicate DOM id');
+const elements = new Map();
+function element() {
+    const classes = new Set();
+    return {
+        style: {}, children: [], handlers: {}, attributes: {},
+        classList: {
+            add(x) { classes.add(x); }, remove(x) { classes.delete(x); },
+            toggle(x, on) { on ? classes.add(x) : classes.delete(x); },
+            contains(x) { return classes.has(x); }
+        },
+        addEventListener(name, fn) { this.handlers[name] = fn; },
+        appendChild(x) { this.children.push(x); },
+        set innerHTML(value) { this.children = []; },
+        setAttribute(k, v) { this.attributes[k] = v; },
+        removeAttribute(k) { delete this.attributes[k]; },
+        hasAttribute(k) { return k in this.attributes; },
+        pause() {}, load() {}
+    };
+}
+for (const id of ids) elements.set(id, element());
+const document = {
+    getElementById(id) { assert(elements.has(id), `Missing DOM element: ${id}`); return elements.get(id); },
+    createElement: element
+};
+const context = vm.createContext({ document, console, setTimeout, assert });
+vm.runInContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], context);
+vm.runInContext(`
+    let clicks = 0;
+    for (const [id, node] of Object.entries(story)) {
+        renderNode(id);
+        for (const char of node.chars || []) assert(CHARACTERS[char], 'Unknown character ' + char);
+        for (const next of [node.next, ...(node.choices || []).map(c => c.next)].filter(Boolean))
+            assert(story[next], 'Missing destination: ' + id + ' -> ' + next);
+        if (node.xuPhoto) assert(XU_YI_MING_BG[node.xuPhoto], 'Unknown Xu photo');
+        if (node.moments) {
+            assert(!document.getElementById('moments-panel').classList.contains('hidden'));
+            assert.equal(document.getElementById('moments-panel').children[2].children.length, 3);
+        }
+        for (let i = 0; i < (node.choices || []).length; i++) {
+            renderNode(id);
+            choicesContainer.children[i].handlers.click();
+            assert.equal(gameState.currentNode, node.choices[i].next);
+            clicks++;
+        }
+    }
+    for (const [button, target] of [['start-btn','intro1'],['romance-btn','romance_start'],['su-romance-btn','su_love_start'],['xu-romance-btn','xu_start']]) {
+        document.getElementById(button).handlers.click();
+        assert.equal(gameState.currentNode, target);
+    }
+    const reached = new Set();
+    function walk(id) {
+        if (reached.has(id)) return;
+        reached.add(id);
+        const node = story[id];
+        [node.next, ...(node.choices || []).map(c => c.next)].filter(Boolean).forEach(walk);
+    }
+    ['intro1','romance_start','su_love_start','xu_start'].forEach(walk);
+    assert.equal(reached.size, Object.keys(story).length, 'Unreachable story node');
+    renderNode('xu_feed'); renderNode('intro1');
+    assert(document.getElementById('moments-panel').classList.contains('hidden'));
+    assert(!sceneArea.classList.contains('xu-portrait'));
+    renderNode('xu_team'); assert(sceneArea.classList.contains('four-characters'));
+    renderNode('xu_start'); assert(!sceneArea.classList.contains('four-characters'));
+    gameState.favor.xu = 99; renderNode('xu_greeting');
+    choicesContainer.children[0].handlers.click();
+    assert.equal(gameState.favor.xu, 100);
+    assert.equal(document.getElementById('xu-fill').style.width, '100%');
+    console.log(JSON.stringify({ storyNodes: Object.keys(story).length, xuNodes: Object.keys(story).filter(k => k.startsWith('xu_')).length, choicesVerified: clicks, allNodesReachable: true }));
+`, context);
+const files = new Set([...html.matchAll(/"([^"\r\n]+\.(?:jpg|png|mp4))"/g)].map(m => m[1]));
+for (const file of files) assert(fs.existsSync(path.join(path.dirname(source), file)), `Missing media ${file}`);
+console.log(`Verified ${files.size} local media references: ${source}`);
+
