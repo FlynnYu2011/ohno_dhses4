@@ -51,10 +51,9 @@ vm.runInContext(`
             clicks++;
         }
     }
-    for (const [button, target] of [['start-btn','intro1'],['romance-btn','romance_start'],['su-romance-btn','su_love_start'],['xu-romance-btn','xu_start']]) {
-        document.getElementById(button).handlers.click();
-        assert.equal(gameState.currentNode, target);
-    }
+    document.getElementById('start-btn').handlers.click();
+    assert.equal(gameState.currentNode, 'intro1');
+    assert.equal(document.getElementById('chapter-status').textContent, CHAPTER_TITLES[0]);
     const reached = new Set();
     function walk(id) {
         if (reached.has(id)) return;
@@ -62,7 +61,7 @@ vm.runInContext(`
         const node = story[id];
         [node.next, ...(node.choices || []).map(c => c.next)].filter(Boolean).forEach(walk);
     }
-    ['intro1','romance_start','su_love_start','xu_start'].forEach(walk);
+    walk('intro1');
     assert.equal(reached.size, Object.keys(story).length, 'Unreachable story node');
     renderNode('xu_feed'); renderNode('intro1');
     assert(document.getElementById('moments-panel').classList.contains('hidden'));
@@ -73,9 +72,51 @@ vm.runInContext(`
     choicesContainer.children[0].handlers.click();
     assert.equal(gameState.favor.xu, 100);
     assert.equal(document.getElementById('xu-fill').style.width, '100%');
+    for (const [id, node] of Object.entries(story)) {
+        if (node.chapterResult) {
+            assert(!node.choices, 'Chapter results must continue the main story');
+            assert.equal(story[node.next].chapter, node.chapter + 1, 'Chapter transition: ' + id);
+        }
+        for (const next of [node.next, ...(node.choices || []).map(c => c.next)].filter(Boolean)) {
+            if (id !== 'campus_end') assert(story[next].chapter >= node.chapter, 'Backwards chapter jump: ' + id);
+        }
+    }
+    for (let chapter = 1; chapter <= 6; chapter++) {
+        const bypass = new Set();
+        function walkWithoutChapter(id) {
+            if (bypass.has(id) || story[id].chapter === chapter) return;
+            bypass.add(id);
+            if (id === 'campus_end') return;
+            const node = story[id];
+            [node.next, ...(node.choices || []).map(c => c.next)].filter(Boolean).forEach(walkWithoutChapter);
+        }
+        walkWithoutChapter('intro1');
+        assert(!bypass.has('campus_end'), 'Campaign can skip chapter ' + chapter);
+    }
+    renderNode('romance_sweet_end'); renderNode('su_love_sweet_end'); renderNode('xu_sweet_end'); renderNode('campus_end');
+    assert.equal(Object.keys(gameState.memories).length, 3);
+    choicesContainer.children[0].handlers.click();
+    assert.equal(gameState.currentNode, 'intro1');
+    assert.equal(Object.keys(gameState.memories).length, 0);
+    assert(Object.values(gameState.favor).every(value => value === 0));
+    const chaptersSeen = new Set();
+    let steps = 0;
+    while (gameState.currentNode !== 'campus_end') {
+        assert(++steps < 200, 'Campaign cannot reach the final page');
+        const node = story[gameState.currentNode];
+        chaptersSeen.add(node.chapter);
+        if (node.choices) choicesContainer.children[0].handlers.click();
+        else dialogBox.handlers.click({ target: { closest() { return null; } } });
+    }
+    chaptersSeen.add(story.campus_end.chapter);
+    assert.deepEqual([...chaptersSeen], [0, 1, 2, 3, 4, 5, 6]);
+    assert.equal(Object.keys(gameState.memories).length, 3);
     console.log(JSON.stringify({ storyNodes: Object.keys(story).length, xuNodes: Object.keys(story).filter(k => k.startsWith('xu_')).length, choicesVerified: clicks, allNodesReachable: true }));
 `, context);
 const files = new Set([...html.matchAll(/"([^"\r\n]+\.(?:jpg|png|mp4))"/g)].map(m => m[1]));
+const cover = html.slice(html.indexOf('<div id="start-screen">'), html.indexOf('<!-- 好感度栏 -->'));
+assert.equal((cover.match(/<button\b/g) || []).length, 1, 'Cover must have only one start button');
+assert(!/id="(?:romance|su-romance|xu-romance)-btn"/.test(html), 'Special episode buttons remain');
 for (const file of files) assert(fs.existsSync(path.join(path.dirname(source), file)), `Missing media ${file}`);
 console.log(`Verified ${files.size} local media references: ${source}`);
 

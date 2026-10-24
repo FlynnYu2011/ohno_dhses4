@@ -4,20 +4,20 @@
 
 ## 本次更新
 
-- 新人物徐一鸣：25 个剧情节点、4 个结局、独立好感度和随机互动。
-- 三张角色照片与三条虚构朋友圈卡片。
-- 首页专属入口，以及第一章的主线入口。
-- 保留李逸鸿专属篇及原有校园剧情，共 151 个剧情节点。
-- 四角色同场布局、手机端布局，以及大照片相纸边框。
+- 全新装订手记界面：打孔纸页、铅笔双线描边、胶带相纸、手绘人物头像和编号便签。
+- 首页只保留一个“开始游戏”，取消所有特别篇直达入口。
+- 157 个剧情节点整合成连续流程：初见 → 四班日常 → 运动会 → 风把心事告诉你 → 画册里的你 → 朋友圈之外 → 四班尾声。
+- 保留所有剧情分支。每章的不同结果会自动接入下一章，尾声汇总本次收录的故事。
+- 四位角色的好感度贯穿全篇，只有全篇结束后重新开始才会重置。
 
 ## 下载与运行
 
 发布文件位于 `dist/`，也可从 [GitHub Releases](https://github.com/FlynnYu2011/ohno_dhses4/releases) 下载。
 
-- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.1.0/ohno_dhses4.exe)
-- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.1.0/ohno_dhses4.html)
-- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.1.0/ohno_dhses4.apk)
-- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.1.0/ohno_dhses4-source.zip)
+- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4.exe)
+- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4.html)
+- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4.apk)
+- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4-source.zip)
 
 | 文件 | 使用方式 |
 | --- | --- |
@@ -33,7 +33,7 @@ APK 使用项目本地测试密钥签名，尚未上传应用商店。若要长�
 
 ## 从源码运行
 
-直接打开 `dhses4.html`。同目录的图片和视频必须一起保留。此版本不保存跨启动进度；结局重玩和回主线会保留当前会话的好感度。
+直接打开 `dhses4.html`。同目录的图片和视频必须一起保留。此版本不保存跨启动进度；章节推进保留当前会话的好感度，全篇结束后重新开始会重置本次手记。
 
 ## 构建三个版本
 
@@ -49,7 +49,7 @@ node scripts/verify-game.cjs
 
 Android 使用 JDK 17、Android SDK 35 的 `javac`、`d8`、`aapt`、`zipalign` 和 `apksigner` 编译，无第三方 Android 运行时框架。Windows 使用 Microsoft WebView2 SDK 1.0.4314.35。
 
-`node scripts/verify-game.cjs` 检查全部节点可达性、选择事件、四个首页入口、媒体引用、朋友圈切换和好感度上限。它不代替浏览器视觉测试或真机测试。
+`node scripts/verify-game.cjs` 检查从唯一入口出发的全部节点可达性、93 个选择事件、章节不会倒退或跳过、篇章结果自动衔接、尾声收录与重新开始、媒体引用、朋友圈切换和好感度上限。它不代替浏览器视觉测试或真机测试。
 
 ## GitHub 发布
 

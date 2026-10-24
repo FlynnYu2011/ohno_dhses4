@@ -43,4 +43,4 @@ jobs:
             Write-Output "Release already exists; preserving its uploaded packages and signing identity."
             exit 0
           }
-          gh release create $env:GITHUB_REF_NAME dist/ohno_dhses4.html dist/ohno_dhses4.exe dist/ohno_dhses4.apk dist/ohno_dhses4-source.zip dist/SHA256SUMS.txt --verify-tag --title "四班同学 $env:GITHUB_REF_NAME" --notes "包含徐一鸣专属篇、HTML 离线版、Windows WebView2 版及 Android 测试签名版。"
+          gh release create $env:GITHUB_REF_NAME dist/ohno_dhses4.html dist/ohno_dhses4.exe dist/ohno_dhses4.apk dist/ohno_dhses4-source.zip dist/SHA256SUMS.txt --verify-tag --title "四班同学 $env:GITHUB_REF_NAME" --notes "手绘手记界面与完整连续剧情，包含 HTML 离线版、Windows WebView2 版及 Android 测试签名版。"

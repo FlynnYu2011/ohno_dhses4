@@ -91,7 +91,7 @@ internal sealed class GameWindow : Form
     public GameWindow(string folder)
     {
         this.folder = folder;
-        Text = "完蛋！我被四班同学包围了 · 徐一鸣登场";
+        Text = "完蛋！我被四班同学包围了 · 四班青春手记";
         Width = 1100; Height = 900;
         MinimumSize = new System.Drawing.Size(420, 600);
         StartPosition = FormStartPosition.CenterScreen;
