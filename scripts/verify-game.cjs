@@ -22,10 +22,16 @@ function element() {
         setAttribute(k, v) { this.attributes[k] = v; },
         removeAttribute(k) { delete this.attributes[k]; },
         hasAttribute(k) { return k in this.attributes; },
+        clientWidth: 800, clientLeft: 0, clientTop: 0, offsetWidth: 160, offsetHeight: 40,
+        getBoundingClientRect() { return {left: 0, top: 100, width: 100}; },
         pause() {}, load() {}
     };
 }
 for (const id of ids) elements.set(id, element());
+for (const tag of html.matchAll(/<[a-z][\w-]*\b([^>]*\bid="([^"]+)"[^>]*)>/gi)) {
+    const classes = tag[1].match(/\bclass="([^"]*)"/);
+    if (classes) classes[1].split(/\s+/).filter(Boolean).forEach(name => elements.get(tag[2]).classList.add(name));
+}
 const document = {
     getElementById(id) { assert(elements.has(id), `Missing DOM element: ${id}`); return elements.get(id); },
     createElement: element
@@ -54,6 +60,18 @@ vm.runInContext(`
     document.getElementById('start-btn').handlers.click();
     assert.equal(gameState.currentNode, 'intro1');
     assert.equal(document.getElementById('chapter-status').textContent, CHAPTER_TITLES[0]);
+    assert(!favorBar.classList.contains('hidden'), 'Favor panel remains hidden after starting');
+    for (const id of Object.keys(CHARACTERS)) {
+        gameState.favor[id] = 0;
+    }
+    updateFavorBar();
+    for (const id of Object.keys(CHARACTERS)) {
+        assert.equal(document.getElementById(id + '-value').textContent, '0 / 100');
+        charElements[id].handlers.click();
+        assert.equal(document.getElementById(id + '-value').textContent, '1 / 100');
+        assert.equal(document.getElementById(id + '-fill').style.width, '1%');
+        assert.equal(document.getElementById(id + '-track').attributes['aria-valuenow'], '1');
+    }
     const reached = new Set();
     function walk(id) {
         if (reached.has(id)) return;
@@ -85,6 +103,7 @@ vm.runInContext(`
     choicesContainer.children[0].handlers.click();
     assert.equal(gameState.favor.xu, 100);
     assert.equal(document.getElementById('xu-fill').style.width, '100%');
+    assert.equal(document.getElementById('xu-value').textContent, '100 / 100');
     for (const [id, node] of Object.entries(story)) {
         if (node.chapterResult) {
             assert(!node.choices, 'Chapter results must continue the main story');
@@ -112,6 +131,7 @@ vm.runInContext(`
     assert.equal(gameState.currentNode, 'intro1');
     assert.equal(Object.keys(gameState.memories).length, 0);
     assert(Object.values(gameState.favor).every(value => value === 0));
+    for (const id of Object.keys(CHARACTERS)) assert.equal(document.getElementById(id + '-value').textContent, '0 / 100');
     const chaptersSeen = new Set();
     let steps = 0;
     while (gameState.currentNode !== 'campus_end') {
