@@ -4,6 +4,7 @@
 
 ## 本次更新
 
+- 增加水彩爱心 CG，在三处告白得到回应时展示，并附轻微的爱心飘动。友情及慢慢了解的选择不会误触发。
 - 全新装订手记界面：打孔纸页、铅笔双线描边、胶带相纸、手绘人物头像和编号便签。
 - 首页只保留一个“开始游戏”，取消所有特别篇直达入口。
 - 157 个剧情节点整合成连续流程：初见 → 四班日常 → 运动会 → 风把心事告诉你 → 画册里的你 → 朋友圈之外 → 四班尾声。
@@ -14,10 +15,10 @@
 
 发布文件位于 `dist/`，也可从 [GitHub Releases](https://github.com/FlynnYu2011/ohno_dhses4/releases) 下载。
 
-- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4.exe)
-- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4.html)
-- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4.apk)
-- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.0/ohno_dhses4-source.zip)
+- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.1/ohno_dhses4.exe)
+- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.1/ohno_dhses4.html)
+- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.1/ohno_dhses4.apk)
+- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.1/ohno_dhses4-source.zip)
 
 | 文件 | 使用方式 |
 | --- | --- |

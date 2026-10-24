@@ -127,7 +127,18 @@
             .moments-grid { grid-template-columns:1fr; gap:16px; }
             .moment-card img { height:210px; object-fit:contain; background:#eee6d6; }
         }
-        @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; } }
+        #scene-area.love-cg { height:auto; aspect-ratio:3/2; }
+        .love-cg .character { display:none; }
+        #love-cg-label { position:absolute; left:50%; bottom:10px; transform:translateX(-50%) rotate(-1deg); width:max-content; max-width:94%; z-index:5; padding:8px 18px; background:#fff8e9ed; border:1px solid #c29b88; border-radius:5px 9px 4px 7px; text-align:center; box-shadow:2px 3px 0 #ba9a7822; pointer-events:none; }
+        #love-cg-label strong { display:block; font-size:19px; font-weight:500; letter-spacing:3px; color:#a66e6c; }
+        #love-cg-line { display:block; font-size:13px; margin-top:4px; color:#8f7b64; line-height:1.6; }
+        #love-cg-hearts { position:absolute; inset:0; pointer-events:none; z-index:4; overflow:hidden; }
+        #love-cg-hearts span { position:absolute; bottom:12%; left:13%; font-size:26px; color:#c68d84; animation:heart-drift 5s ease-in-out infinite; opacity:.65; }
+        #love-cg-hearts span:nth-child(2) { left:76%; bottom:19%; font-size:20px; animation-delay:-2s; }
+        #love-cg-hearts span:nth-child(3) { left:85%; bottom:45%; font-size:18px; animation-delay:-3.5s; }
+        @keyframes heart-drift { 0%,100% { transform:translateY(0) rotate(-9deg); opacity:.35; } 50% { transform:translateY(-20px) rotate(9deg); opacity:.8; } }
+        @media(max-width:600px) { #love-cg-label { bottom:3px; padding:5px 10px; } #love-cg-label strong { font-size:16px; } #love-cg-line { font-size:11px; } }
+        @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } }
 
     </style>
 </head>
@@ -209,6 +220,8 @@
                 <div class="character-avatar" id="avatar-xu">🥸</div>
                 <div class="character-name">朋友圈气氛组 · 徐一鸣</div>
             </div>
+            <div id="love-cg-hearts" class="hidden" aria-hidden="true"><span>♡</span><span>♥</span><span>♡</span></div>
+            <div id="love-cg-label" class="hidden"><strong>♡ 心动定格 ♡</strong><span id="love-cg-line"></span></div>
             <div id="interaction-bubble"></div>
         </div>
 
@@ -2507,6 +2520,13 @@
     }
 };
 
+    const LOVE_CG_IMAGE = "love-heart-cg.png";
+    const LOVE_CG_SCENES = {
+        romance_answer: '白玫瑰的回答 · 张正与曲嘉华',
+        su_love_mutual: '把心事画进同一本画册 · 李逸鸿',
+        xu_mutual: '朋友圈之外，也想与你同频 · 徐一鸣'
+    };
+
     const gameState = {
         favor: { shen: 0, lu: 0, su: 0, xu: 0 },
         currentNode: null,
@@ -2609,6 +2629,11 @@
         
         if (gameState.currentNode !== nodeId) gameState.pageNumber++;
         gameState.currentNode = nodeId;
+        const loveCgCaption = LOVE_CG_SCENES[nodeId];
+        sceneArea.classList.toggle('love-cg', Boolean(loveCgCaption));
+        document.getElementById('love-cg-label').classList.toggle('hidden', !loveCgCaption);
+        document.getElementById('love-cg-hearts').classList.toggle('hidden', !loveCgCaption);
+        document.getElementById('love-cg-line').textContent = loveCgCaption || '';
         document.getElementById('chapter-status').textContent = CHAPTER_TITLES[node.chapter];
         document.getElementById('page-status').textContent = `第 ${String(gameState.pageNumber).padStart(3, '0')} 页`;
         if (node.chapterResult) gameState.memories[node.chapter] = node.text.split('\n')[0];
@@ -2636,7 +2661,9 @@
         sceneArea.classList.toggle('art-room-portrait', Boolean(isArtRoomPortrait));
         
         const isZhangZhengScene = node.chars?.length === 1 && node.chars[0] === 'shen';
-        if (node.photo && COUPLE_BG[node.photo]) {
+        if (loveCgCaption) {
+            sceneArea.style.background = `url("${LOVE_CG_IMAGE}") center / contain no-repeat #fff5e4`;
+        } else if (node.photo && COUPLE_BG[node.photo]) {
             sceneArea.style.background = `url("${COUPLE_BG[node.photo]}") center / contain no-repeat #dbeafe`;
         } else if (isXuPortrait) {
             sceneArea.style.background = `url("${XU_YI_MING_BG[node.xuPhoto]}") center / contain no-repeat #f4e8d2`;

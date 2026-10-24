@@ -64,6 +64,19 @@ vm.runInContext(`
     walk('intro1');
     assert.equal(reached.size, Object.keys(story).length, 'Unreachable story node');
     renderNode('xu_feed'); renderNode('intro1');
+    for (const id of Object.keys(LOVE_CG_SCENES)) {
+        renderNode(id);
+        assert(sceneArea.classList.contains('love-cg'), 'Heart CG not shown: ' + id);
+        assert(sceneArea.style.background.includes(LOVE_CG_IMAGE));
+        assert(!document.getElementById('love-cg-label').classList.contains('hidden'));
+        assert.equal(document.getElementById('love-cg-line').textContent, LOVE_CG_SCENES[id]);
+    }
+    for (const id of ['su_love_friend', 'su_love_slow', 'xu_friend_end', 'xu_slow_end', 'intro1']) {
+        renderNode(id);
+        assert(!sceneArea.classList.contains('love-cg'), 'CG should not show for this node: ' + id);
+        assert(document.getElementById('love-cg-label').classList.contains('hidden'));
+        assert(document.getElementById('love-cg-hearts').classList.contains('hidden'));
+    }
     assert(document.getElementById('moments-panel').classList.contains('hidden'));
     assert(!sceneArea.classList.contains('xu-portrait'));
     renderNode('xu_team'); assert(sceneArea.classList.contains('four-characters'));
