@@ -36,7 +36,7 @@ const document = {
     getElementById(id) { assert(elements.has(id), `Missing DOM element: ${id}`); return elements.get(id); },
     createElement: element
 };
-const context = vm.createContext({ document, console, setTimeout, assert });
+const context = vm.createContext({ document, window: {}, navigator: {}, console, setTimeout, clearTimeout, setInterval, clearInterval, assert });
 vm.runInContext(html.match(/<script>([\s\S]*?)<\/script>/)[1], context);
 vm.runInContext(`
     let clicks = 0;

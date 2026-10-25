@@ -3,6 +3,8 @@ $projectRoot = Split-Path $PSScriptRoot -Parent
 Set-Location -LiteralPath $projectRoot
 & node scripts/verify-game.cjs
 if ($LASTEXITCODE -ne 0) { throw 'Story checks failed' }
+& node scripts/verify-media.cjs
+if ($LASTEXITCODE -ne 0) { throw 'Photo and voice checks failed' }
 & "$PSScriptRoot\optimize-assets.ps1"
 & node scripts/build-web.cjs
 if ($LASTEXITCODE -ne 0) { throw 'HTML build failed' }

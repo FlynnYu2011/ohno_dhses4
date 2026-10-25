@@ -4,6 +4,9 @@
 
 ## 本次更新
 
+- 吸收「4.0配音图片版」的逐页照片与配音工具：每页可固定一张自选照片；录制最长 90 秒的配音，支持试听、重录、删除和翻页自动播放。
+- 照片和录音保存在当前浏览器或应用的 IndexedDB 中，不上传服务器。翻页或切到后台会停止播放并取消未完成录音；等待权限期间翻页也会取消。
+- Android 通过系统选图器选择照片，录音时按需请求麦克风权限。无需相册整库权限，不录制摄像头视频。
 - 好感度成长提速：剧情选项加分 ×3、首次阅读有出场角色的剧情为对应角色 +2、人物互动 +5、完成每章全员 +15。剧情与章节奖励每轮仅领取一次；不刷人物也能正常通关满分。
 - 好感度改为醒目的四人卡片，显示“当前数值 / 100”与进度条，初始 0 分也可见；滚动剧情时固定在顶部。
 - 增加水彩爱心 CG，在三处告白得到回应时展示，并附轻微的爱心飘动。友情及慢慢了解的选择不会误触发。
@@ -17,16 +20,16 @@
 
 发布文件位于 `dist/`，也可从 [GitHub Releases](https://github.com/FlynnYu2011/ohno_dhses4/releases) 下载。
 
-- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4.exe)
-- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4.html)
-- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4.apk)
-- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4-source.zip)
+- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4.exe)
+- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4.html)
+- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4.apk)
+- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4-source.zip)
 
 | 文件 | 使用方式 |
 | --- | --- |
 | `ohno_dhses4.html` | 单文件离线版，已内嵌全部照片和视频。用较新的 Edge、Chrome 或 Safari 打开。 |
 | `ohno_dhses4.exe` | Windows x64 独立窗口版，需要 .NET Framework 4.6.2 或更新版本，以及 Microsoft Edge WebView2 Runtime。无需管理员权限。 |
-| `ohno_dhses4.apk` | Android 8.0 及以上的本地测试签名版，建议更新 Android System WebView。离线运行，无网络、相机或通讯录权限。 |
+| `ohno_dhses4.apk` | Android 8.0 及以上的本地测试签名版，建议更新 Android System WebView。离线运行，录音时按需申请麦克风权限，无网络、相机或通讯录权限。 |
 
 Windows EXE 为单文件应用，首次启动会把内嵌游戏资源解压到 `%LOCALAPPDATA%\OhnoDhses4\`。它依赖系统 WebView2，不包含独立 Chromium 内核，也未进行 Windows 商业代码签名。若缺少运行时，可安装 [Microsoft WebView2 Runtime](https://developer.microsoft.com/microsoft-edge/webview2/)，或使用 HTML 版。
 
@@ -53,6 +56,16 @@ node scripts/verify-game.cjs
 Android 使用 JDK 17、Android SDK 35 的 `javac`、`d8`、`aapt`、`zipalign` 和 `apksigner` 编译，无第三方 Android 运行时框架。Windows 使用 Microsoft WebView2 SDK 1.0.4314.35。
 
 `node scripts/verify-game.cjs` 检查从唯一入口出发的全部节点可达性、93 个选择事件、章节不会倒退或跳过、篇章结果自动衔接、尾声收录与重新开始、媒体引用、朋友圈切换和好感度上限。它不代替浏览器视觉测试或真机测试。
+
+`node scripts/verify-media.cjs` 使用异步浏览器 API 模型检查逐页照片固定/恢复、选图期间切页、配音录制/播放/删除、本地存储失败、延迟权限、90 秒时限和后台清理。尚未用真实麦克风或 Android 真机验证录音与选图。
+
+## 照片和配音的保存
+
+在场景右上角点击“放入本页照片”或“本页配音”。照片会固定到这一剧情节点；配音可以重新录制或删除。视频页只显示配音工具，播放配音或开始录音时会暂停剧情视频。
+
+本地保存只属于当前浏览器、文件来源或应用配置；清除浏览器数据或卸载应用会清除这些资料，资料不会自动进入 GitHub 安装包，也不会在不同设备之间同步。重新开始剧情保留本机已固定的照片和配音。
+
+录音需要系统及浏览器允许麦克风。HTML 版可用性取决于浏览器的本地文件和录音支持；Windows 版使用应用内的 HTTPS 来源，Android 版使用拦截到本地资源的 HTTPS 来源。参考 [Android 本地内容加载](https://developer.android.com/develop/ui/views/layout/webapps/load-local-content) 与 [WebChromeClient 文件选择和权限回调](https://developer.android.com/reference/android/webkit/WebChromeClient)。
 
 ## GitHub 发布
 

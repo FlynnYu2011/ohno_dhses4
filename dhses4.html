@@ -149,6 +149,106 @@
         @media(max-width:640px) { #favor-bar { grid-template-columns:repeat(2,minmax(0,1fr)); padding:10px 12px 12px; gap:7px; } .favor-item { padding:7px 8px; } .favor-name { font-size:13px; } .favor-value { font-size:11px; } #favor-bar .favor-track { max-width:none; width:100%; } }
         @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } }
 
+        /* ===== 本页照片 / 本页配音 工具栏 ===== */
+        #scene-tools {
+            position:absolute; top:12px; right:12px; z-index:26;
+            display:flex; flex-wrap:wrap; gap:8px; justify-content:flex-end;
+            max-width:calc(100% - 24px);
+        }
+        #photo-slot-btn, #voice-slot-btn {
+            position:relative;
+            padding:7px 12px; font-size:13px; line-height:1.4;
+            color:#6b5a42; background:#fff9e8ee;
+            border:1px dashed #9b896f; border-radius:4px 8px 3px 6px;
+            box-shadow:2px 2px 0 #8f795533;
+            transform:rotate(1.5deg);
+            transition:transform .16s, background .16s, box-shadow .16s;
+        }
+        #photo-slot-btn::before, #voice-slot-btn::before {
+            content:""; position:absolute; inset:3px;
+            border:1px dotted #b3a08055; border-radius:3px 6px 2px 4px;
+            pointer-events:none;
+        }
+        #photo-slot-btn:hover, #voice-slot-btn:hover {
+            background:#fff3d9; transform:rotate(0deg) translateY(-2px);
+            box-shadow:3px 4px 0 #8f795533;
+        }
+        #photo-slot-btn:active, #voice-slot-btn:active { translate:1px 2px; }
+        #photo-slot-btn:disabled { opacity:.6; cursor:progress; }
+        #voice-slot-btn.recording {
+            background:#ffe3dd; border-color:#bd7868; color:#8d362b;
+            animation:rec-pulse 1.1s ease-in-out infinite;
+        }
+        @keyframes rec-pulse { 50% { box-shadow:0 0 0 4px #d98a7a33; } }
+
+        /* ===== 配音小面板 ===== */
+        #voice-panel {
+            position:absolute; top:calc(100% + 7px); right:0;
+            width:238px; padding:12px;
+            background:#fff9e8f8; border:1.5px solid #9b896f;
+            border-radius:6px 10px 5px 8px;
+            box-shadow:4px 5px 0 #8f795544;
+            z-index:27;
+        }
+        #voice-panel::before {
+            content:""; position:absolute; top:-7px; right:18px;
+            width:12px; height:12px; background:#fff9e8;
+            border-left:1.5px solid #9b896f; border-top:1.5px solid #9b896f;
+            transform:rotate(45deg);
+        }
+        #voice-status { font-size:12px; line-height:1.65; color:#7a6a52; margin-bottom:10px; min-height:2.6em; }
+        #voice-panel .voice-actions { display:flex; flex-wrap:wrap; gap:7px; }
+        #voice-panel button {
+            flex:1 1 auto; padding:7px 8px; font-size:13px;
+            color:#5c4d38; background:#f2e9d4;
+            border:1px solid #a3906f; border-radius:4px 7px 3px 5px;
+            box-shadow:1px 2px 0 #b6a48655;
+        }
+        #voice-panel button:disabled { opacity:.4; cursor:not-allowed; }
+        #voice-panel button:active:not(:disabled) { translate:1px 1px; }
+
+        /* ===== 工具栏 / 自动播放 ===== */
+        #tool-bar { position:fixed; right:14px; bottom:14px; z-index:60; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+        #autoplay-toggle {
+            padding:9px 15px; font-size:13px; letter-spacing:1px; color:#5c4d38;
+            background:#fff8e7f2; border:1.5px solid #9b896b;
+            border-radius:20px 6px 18px 8px / 8px 18px 6px 20px;
+            box-shadow:2px 3px 0 #b6a48666;
+            transition:transform .15s, background .15s, color .15s;
+        }
+        #autoplay-toggle:hover { transform:translateY(-2px); }
+        #autoplay-toggle:active { translate:1px 2px; }
+        #autoplay-toggle[aria-pressed="true"] { background:#dfeade; border-color:#8a9c7f; color:#42533a; }
+
+        /* ===== 轻提示 ===== */
+        #toast {
+            position:fixed; left:50%; bottom:82px; z-index:80;
+            transform:translateX(-50%) translateY(12px);
+            max-width:min(90vw,430px); padding:11px 20px;
+            font-size:14px; line-height:1.6; text-align:center; color:#5c4d38;
+            background:#fff8e7f7; border:1.5px solid #a3906f;
+            border-radius:6px 12px 5px 9px; box-shadow:3px 4px 0 #b6a48655;
+            opacity:0; pointer-events:none;
+            transition:opacity .25s, transform .25s;
+        }
+        #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+        @media(max-width:600px) {
+            #scene-tools { top:6px; right:6px; gap:5px; }
+            #photo-slot-btn, #voice-slot-btn { font-size:11px; padding:5px 8px; }
+            #voice-panel { width:206px; padding:9px; }
+            #voice-panel button { font-size:12px; padding:6px 6px; }
+        }
+
+        #scene-tools { top:54px; z-index:18; }
+        .video-scene #scene-tools { position:relative; top:auto; right:auto; margin-bottom:10px; }
+        #voice-panel .media-note { font-size:11px; line-height:1.6; color:#8b7a63; margin-top:10px; }
+        #voice-status { overflow-wrap:anywhere; }
+        .custom-photo .character-avatar { display:none; }
+        #scene-area.custom-photo { height:420px; }
+        #photo-input { display:none; }
+        @media(max-width:600px) { #scene-tools { top:45px; } #scene-area.custom-photo { height:350px; } #tool-bar { position:static; padding:0 18px 22px; align-items:center; } #toast { bottom:30px; } }
+        @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } }
     </style>
 </head>
 <body>
@@ -210,6 +310,20 @@
         <!-- 场景区域 -->
         <div id="scene-area" class="hidden">
             <div id="scene-name">樱花走廊</div>
+            <div id="scene-tools">
+                <button id="photo-slot-btn" class="hidden" type="button" title="为本页放入一张照片（仅一次，放入后固定）">📷 放入本页照片</button>
+                <button id="voice-slot-btn" class="hidden" type="button" title="为本页录制配音">🎙️ 本页配音</button>
+                <div id="voice-panel" class="hidden" role="dialog" aria-label="本页配音面板">
+                    <div id="voice-status">本页尚未录制配音。</div>
+                    <div class="voice-actions">
+                        <button id="voice-play-btn" type="button" disabled>▶ 播放</button>
+                        <button id="voice-rec-btn" type="button">⏺ 开始录制</button>
+                        <button id="voice-del-btn" type="button" disabled>🗑 删除</button>
+                    </div>
+                    <p class="media-note">照片和录音只保存在当前浏览器或应用中，不会上传。首次使用录音时需要允许麦克风。</p>
+                </div>
+            </div>
+
             <div id="sports-video-container" class="hidden">
                 <video id="sports-video" controls playsinline preload="metadata" aria-label="运动会现场视频"></video>
                 <a id="sports-video-link" target="_blank" rel="noopener">单独打开视频</a>
@@ -249,7 +363,14 @@
         <section id="moments-panel" class="hidden" aria-label="徐一鸣的虚构朋友圈"></section>
         <!-- 选项区域 -->
         <div id="choices-container" class="hidden"></div>
+        <div id="tool-bar" class="hidden" role="group" aria-label="游戏设置">
+            <button id="autoplay-toggle" type="button" aria-pressed="true" title="翻页时自动播放本页已录制的配音">🔁 自动播放配音：开</button>
+        </div>
     </div>
+
+    <!-- ★ 隐藏的文件选择器 / 工具栏 / 轻提示 -->
+    <input id="photo-input" type="file" accept="image/*" hidden>
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <script>
     // =============================================================
@@ -2605,6 +2726,7 @@
         sceneArea.classList.remove('hidden');
         dialogBox.classList.remove('hidden');
         document.getElementById('game-header').classList.remove('hidden');
+        document.getElementById('tool-bar').classList.remove('hidden');
         initCharacters();
         updateFavorBar();
         renderNode(nodeId);
@@ -2642,9 +2764,556 @@
         panel.appendChild(grid);
     }
 
+    const DB_NAME = 'class04-photo-db';
+    const DB_VERSION = 2;
+    const PHOTO_STORE = 'photos';
+    const VOICE_STORE = 'voices';
+    let dbPromise = null;
+
+    function openDB() {
+        if (dbPromise) return dbPromise;
+        dbPromise = new Promise((resolve, reject) => {
+            if (!('indexedDB' in window)) { reject(new Error('IndexedDB 不可用')); return; }
+            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = () => {
+                const db = req.result;
+                if (!db.objectStoreNames.contains(PHOTO_STORE)) db.createObjectStore(PHOTO_STORE);
+                if (!db.objectStoreNames.contains(VOICE_STORE)) db.createObjectStore(VOICE_STORE);
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+        return dbPromise;
+    }
+
+    function dbRun(storeName, mode, action) {
+        return openDB().then(db => new Promise((resolve, reject) => {
+            const tx = db.transaction(storeName, mode);
+            const store = tx.objectStore(storeName);
+            const request = action(store);
+            let value;
+            if (request) request.onsuccess = () => { value = request.result; };
+            tx.oncomplete = () => resolve(value);
+            tx.onerror = () => reject(tx.error);
+            tx.onabort = () => reject(tx.error);
+        }));
+    }
+
+    const PhotoDB = {
+        getAll() { return dbRun(PHOTO_STORE, 'readonly', s => s.getAll()); },
+        getAllKeys() { return dbRun(PHOTO_STORE, 'readonly', s => s.getAllKeys()); },
+        put(key, value) { return dbRun(PHOTO_STORE, 'readwrite', s => s.put(value, key)); }
+    };
+
+    const VoiceDB = {
+        getAll() { return dbRun(VOICE_STORE, 'readonly', s => s.getAll()); },
+        getAllKeys() { return dbRun(VOICE_STORE, 'readonly', s => s.getAllKeys()); },
+        put(key, value) { return dbRun(VOICE_STORE, 'readwrite', s => s.put(value, key)); },
+        delete(key) { return dbRun(VOICE_STORE, 'readwrite', s => s.delete(key)); }
+    };
+
+    function databaseEntries(storeName) {
+        return openDB().then(db => new Promise((resolve, reject) => {
+            const tx = db.transaction(storeName, 'readonly');
+            const entries = [];
+            const request = tx.objectStore(storeName).openCursor();
+            request.onsuccess = () => {
+                const cursor = request.result;
+                if (cursor) { entries.push([cursor.key, cursor.value]); cursor.continue(); }
+            };
+            tx.oncomplete = () => resolve(entries);
+            tx.onerror = tx.onabort = () => reject(tx.error || new Error('读取本地资料失败'));
+        }));
+    }
+
+    // =============================================================
+    // ★ 本页照片（一次性 · 放入后永久固定）
+    // =============================================================
+    const photoCache = Object.create(null);
+
+    function loadPhotos() {
+        return databaseEntries(PHOTO_STORE)
+            .then(entries => {
+                entries.forEach(([key, value]) => { if (!(key in photoCache)) photoCache[key] = value; });
+            })
+            .catch(() => {});
+    }
+
+    function compressImage(file, maxSide = 1280, quality = 0.82) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onerror = () => reject(new Error('读取失败'));
+            reader.onload = () => {
+                const img = new Image();
+                img.onerror = () => reject(new Error('图片解析失败'));
+                img.onload = () => {
+                    const scale = Math.min(1, maxSide / Math.max(img.width, img.height));
+                    const w = Math.max(1, Math.round(img.width * scale));
+                    const h = Math.max(1, Math.round(img.height * scale));
+                    const canvas = document.createElement('canvas');
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.fillStyle = '#fffdf4';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.src = reader.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    let toastTimer = null;
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toast.classList.remove('show'), 2800);
+    }
+
+    const photoSlotBtn = document.getElementById('photo-slot-btn');
+    const photoInput = document.getElementById('photo-input');
+    let photoTargetNode = null;
+
+    function refreshPhotoSlot() {
+        const nodeId = gameState.currentNode;
+        const locked = Boolean(nodeId && photoCache[nodeId]);
+        photoSlotBtn.classList.toggle('hidden', !nodeId || locked || Boolean(story[nodeId]?.video));
+        photoSlotBtn.disabled = false;
+    }
+
+    photoSlotBtn.addEventListener('click', () => {
+        if (!gameState.currentNode) return;
+        if (photoCache[gameState.currentNode]) return;
+        photoTargetNode = gameState.currentNode;
+        photoInput.click();
+    });
+
+    photoInput.addEventListener('change', async () => {
+        const file = photoInput.files && photoInput.files[0];
+        photoInput.value = '';
+        if (!file) return;
+
+        const nodeId = photoTargetNode || gameState.currentNode;
+        photoTargetNode = null;
+        if (!nodeId || photoCache[nodeId]) return;
+
+        if (!file.type.startsWith('image/')) {
+            showToast('请选择一张图片文件哦～');
+            return;
+        }
+        if (file.size > 20 * 1024 * 1024) { showToast('请选择小于 20MB 的图片。'); return; }
+        if (!confirm('放入后这张照片会固定在本页，之后无法更换。\n确定要放入吗？')) return;
+
+        photoSlotBtn.disabled = true;
+        try {
+            const dataUrl = await compressImage(file);
+            photoCache[nodeId] = dataUrl;
+            let persisted = true;
+            try { await PhotoDB.put(nodeId, dataUrl); } catch (e) { persisted = false; }
+            if (gameState.currentNode === nodeId) applySceneBackground(story[nodeId], nodeId);
+            refreshPhotoSlot();
+            showToast(persisted ? '📷 照片已固定在本页，仅保存在当前设备。' : '照片已应用，但本地保存不可用，仅本次打开有效。');
+        } catch (e) {
+            showToast('照片放入失败，请换一张试试。');
+            photoSlotBtn.disabled = false;
+        }
+    });
+
+    // =============================================================
+    // ★ 本页配音（用户自己录音）
+    // =============================================================
+    const voiceCache = Object.create(null);   // nodeId -> { blob, url, mime }
+    let activeAudio = null;
+    let activeAudioUrl = null;
+    let playingNodeId = null;
+
+    let mediaStream = null;
+    let mediaRecorder = null;
+    let recChunks = [];
+    let recNodeId = null;
+    let recStartTime = 0;
+    let recTimer = null;
+    let recLimitTimer = null;
+    let recDiscard = false;
+    let recordingRequest = 0;
+    let recordingPending = false;
+    const REC_MAX_MS = 90000;
+
+    let autoPlayVoice = true;
+    try { autoPlayVoice = localStorage.getItem('class04-autoplay') !== '0'; } catch (e) {}
+
+    const voiceSlotBtn = document.getElementById('voice-slot-btn');
+    const voicePanel = document.getElementById('voice-panel');
+    const voiceStatus = document.getElementById('voice-status');
+    const voicePlayBtn = document.getElementById('voice-play-btn');
+    const voiceRecBtn = document.getElementById('voice-rec-btn');
+    const voiceDelBtn = document.getElementById('voice-del-btn');
+    const autoplayToggle = document.getElementById('autoplay-toggle');
+
+    let voicePanelOpen = false;
+
+    function updateAutoplayBtn() {
+        autoplayToggle.textContent = autoPlayVoice ? '🔁 自动播放配音：开' : '🔇 自动播放配音：关';
+        autoplayToggle.setAttribute('aria-pressed', String(autoPlayVoice));
+    }
+    autoplayToggle.addEventListener('click', () => {
+        autoPlayVoice = !autoPlayVoice;
+        try { localStorage.setItem('class04-autoplay', autoPlayVoice ? '1' : '0'); } catch (e) {}
+        updateAutoplayBtn();
+        if (!autoPlayVoice) stopActiveAudio();
+    });
+    updateAutoplayBtn();
+
+    function loadVoices() {
+        return databaseEntries(VOICE_STORE)
+            .then(entries => {
+                entries.forEach(([key, v]) => {
+                    if (v && v.blob && !voiceCache[key]) {
+                        voiceCache[key] = {
+                            blob: v.blob,
+                            mime: v.mime || v.blob.type || 'audio/webm'
+                        };
+                    }
+                });
+            })
+            .catch(() => {});
+    }
+
+    function stopActiveAudio() {
+        if (activeAudio) {
+            try { activeAudio.pause(); } catch (e) {}
+            activeAudio.onended = null;
+            activeAudio.onerror = null;
+            activeAudio = null;
+        }
+        if (activeAudioUrl) {
+            URL.revokeObjectURL(activeAudioUrl);
+            activeAudioUrl = null;
+        }
+        playingNodeId = null;
+        updateVoiceUI();
+    }
+
+    function playVoice(nodeId) {
+        const entry = voiceCache[nodeId];
+        if (!entry) { showToast('本页还没有录制配音哦～'); return; }
+        if (playingNodeId === nodeId && activeAudio && !activeAudio.paused) {
+            stopActiveAudio();
+            return;
+        }
+        stopActiveAudio();
+        sportsVideo.pause();
+        const url = URL.createObjectURL(entry.blob);
+        const audio = new Audio(url);
+        activeAudio = audio;
+        activeAudioUrl = url;
+        playingNodeId = nodeId;
+        audio.onended = () => { if (activeAudio === audio) stopActiveAudio(); };
+        audio.onerror = () => { if (activeAudio === audio) { showToast('配音播放失败。'); stopActiveAudio(); } };
+        audio.play().catch(() => {
+            if (activeAudio === audio) { stopActiveAudio(); showToast('配音未能播放，请在本页配音面板点击播放。'); }
+        });
+        updateVoiceUI();
+    }
+
+    function cleanupStream() {
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(t => t.stop());
+            mediaStream = null;
+        }
+    }
+
+    async function startRecording() {
+        if (mediaRecorder || recordingPending || !gameState.currentNode) return;
+        const nodeId = gameState.currentNode;
+        const requestId = ++recordingRequest;
+        stopActiveAudio();
+        sportsVideo.pause();
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showToast('当前浏览器不支持录音，请换用新版 Chrome / Edge / Safari。');
+            return;
+        }
+        recordingPending = true;
+        updateVoiceUI();
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            if (requestId !== recordingRequest || gameState.currentNode !== nodeId) {
+                stream.getTracks().forEach(track => track.stop());
+                return;
+            }
+            mediaStream = stream;
+        } catch (e) {
+            if (requestId === recordingRequest) showToast('无法使用麦克风，请检查权限设置。');
+            return;
+        } finally {
+            if (requestId === recordingRequest) { recordingPending = false; updateVoiceUI(); }
+        }
+        recChunks = [];
+        recNodeId = nodeId;
+        recStartTime = Date.now();
+        recDiscard = false;
+
+        let options = {};
+        const preferred = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'];
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported) {
+            for (const t of preferred) {
+                if (MediaRecorder.isTypeSupported(t)) { options.mimeType = t; break; }
+            }
+        }
+        try {
+            mediaRecorder = new MediaRecorder(mediaStream, options);
+        } catch (e) {
+            try { mediaRecorder = new MediaRecorder(mediaStream); }
+            catch (e2) {
+                showToast('无法启动录音。');
+                cleanupStream();
+                return;
+            }
+        }
+        const recorder = mediaRecorder;
+        mediaRecorder.ondataavailable = (e) => {
+            if (mediaRecorder === recorder && e.data && e.data.size) recChunks.push(e.data);
+        };
+        mediaRecorder.onstop = () => { if (mediaRecorder === recorder) finalizeRecording(); };
+        mediaRecorder.onerror = () => {
+            if (mediaRecorder !== recorder) return;
+            showToast('录音出错，已取消。');
+            recDiscard = true;
+            try { mediaRecorder.stop(); } catch (e) { finalizeRecording(); }
+        };
+        try {
+            mediaRecorder.start(200);
+        } catch (e) {
+            showToast('无法启动录音。');
+            cleanupStream();
+            mediaRecorder = null;
+            recNodeId = null;
+            updateVoiceUI();
+            return;
+        }
+        updateVoiceUI();
+        recTimer = setInterval(updateVoiceUI, 500);
+        recLimitTimer = setTimeout(() => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                showToast('已达到最长录音时间（90秒），自动停止。');
+                stopRecording(false);
+            }
+        }, REC_MAX_MS);
+        showToast('开始录音，再次点击可停止（最长90秒）。');
+    }
+
+    function stopRecording(discard = false) {
+        recDiscard = discard;
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            try { mediaRecorder.stop(); } catch (e) {}
+        } else {
+            cleanupStream();
+            clearInterval(recTimer); recTimer = null;
+            clearTimeout(recLimitTimer); recLimitTimer = null;
+            updateVoiceUI();
+        }
+    }
+
+    function cancelRecording(notify) {
+        recordingRequest++;
+        recordingPending = false;
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            recDiscard = true;
+            try { mediaRecorder.stop(); } catch (e) {}
+            if (notify) showToast('已取消本页录音。');
+        } else {
+            cleanupStream();
+        }
+    }
+
+    function finalizeRecording() {
+        if (!mediaRecorder) return;
+        clearInterval(recTimer); recTimer = null;
+        clearTimeout(recLimitTimer); recLimitTimer = null;
+
+        const nodeId = recNodeId;
+        const discard = recDiscard;
+        const chunks = recChunks.slice();
+        const mime = (mediaRecorder && mediaRecorder.mimeType) || 'audio/webm';
+
+        cleanupStream();
+        mediaRecorder = null;
+        recChunks = [];
+        recNodeId = null;
+        recDiscard = false;
+
+        if (discard || !nodeId || !chunks.length) {
+            updateVoiceUI();
+            return;
+        }
+        const blob = new Blob(chunks, { type: mime || 'audio/webm' });
+        if (blob.size < 1024) {
+            showToast('录音太短，已取消。');
+            updateVoiceUI();
+            return;
+        }
+        if (voiceCache[nodeId] && voiceCache[nodeId].url) {
+            URL.revokeObjectURL(voiceCache[nodeId].url);
+        }
+        voiceCache[nodeId] = { blob, mime, savedAt: Date.now() };
+        VoiceDB.put(nodeId, { blob, mime }).catch(() => {
+            showToast('配音已录制，但本地保存不可用，仅本次打开有效。');
+        });
+        updateVoiceUI();
+        showToast('✅ 本页配音已录制，正在保存到当前设备。');
+        if (gameState.currentNode === nodeId) playVoice(nodeId);
+    }
+
+    async function deleteVoice(nodeId) {
+        if (!confirm('确定删除本页配音吗？删除后可以重新录制。')) return;
+        try { await VoiceDB.delete(nodeId); }
+        catch (e) { showToast('本地存储暂不可用，删除未完成，原配音仍保留。'); return; }
+        if (voiceCache[nodeId] && voiceCache[nodeId].url) {
+            URL.revokeObjectURL(voiceCache[nodeId].url);
+        }
+        delete voiceCache[nodeId];
+        if (playingNodeId === nodeId) stopActiveAudio();
+        updateVoiceUI();
+        showToast('已删除本页配音。');
+    }
+
+    function updateVoiceUI() {
+        const nodeId = gameState.currentNode;
+        const recording = Boolean(mediaRecorder && mediaRecorder.state === 'recording' && recNodeId === nodeId);
+        const hasVoice = Boolean(nodeId && voiceCache[nodeId]);
+
+        voiceSlotBtn.classList.toggle('hidden', !nodeId);
+        voicePanel.classList.toggle('hidden', !(voicePanelOpen && nodeId));
+
+        if (!nodeId) return;
+
+        if (recordingPending) {
+            voiceStatus.textContent = '等待麦克风权限…翻页将取消本次录音。';
+            voiceRecBtn.disabled = true;
+            voicePlayBtn.disabled = true;
+            voiceDelBtn.disabled = true;
+            return;
+        }
+
+        if (recording) {
+            const seconds = Math.floor((Date.now() - recStartTime) / 1000);
+            voiceSlotBtn.textContent = `⏹ 录制中 ${String(Math.floor(seconds / 60)).padStart(1, '0')}:${String(seconds % 60).padStart(2, '0')}`;
+            voiceSlotBtn.classList.add('recording');
+        } else {
+            voiceSlotBtn.textContent = hasVoice ? '🎙️ 本页配音 ✓' : '🎙️ 本页配音';
+            voiceSlotBtn.classList.remove('recording');
+        }
+
+        if (recording) {
+            voiceStatus.textContent = '正在录音…再次点击“本页配音”按钮或下方“停止”。';
+            voicePlayBtn.disabled = true;
+            voiceRecBtn.disabled = false;
+            voiceRecBtn.textContent = '⏹ 停止';
+            voiceDelBtn.disabled = true;
+        } else if (hasVoice) {
+            const isPlaying = playingNodeId === nodeId && activeAudio && !activeAudio.paused;
+            voiceStatus.textContent = isPlaying ? '正在播放本页配音…' : '本页已有配音。可试听、重录或删除。';
+            voicePlayBtn.disabled = false;
+            voicePlayBtn.textContent = isPlaying ? '⏹ 停止播放' : '▶ 播放';
+            voiceRecBtn.disabled = false;
+            voiceRecBtn.textContent = '🔄 重录';
+            voiceDelBtn.disabled = false;
+        } else {
+            voiceStatus.textContent = '本页尚未录制配音。';
+            voicePlayBtn.disabled = true;
+            voicePlayBtn.textContent = '▶ 播放';
+            voiceRecBtn.disabled = false;
+            voiceRecBtn.textContent = '⏺ 开始录制';
+            voiceDelBtn.disabled = true;
+        }
+    }
+
+    voiceSlotBtn.addEventListener('click', () => {
+        if (!gameState.currentNode) return;
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            stopRecording(false);
+            return;
+        }
+        voicePanelOpen = !voicePanelOpen;
+        updateVoiceUI();
+    });
+
+    voiceRecBtn.addEventListener('click', () => {
+        if (!gameState.currentNode) return;
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+            stopRecording(false);
+            return;
+        }
+        if (voiceCache[gameState.currentNode]) {
+            if (!confirm('本页已有配音，重新录制会覆盖原来的。继续吗？')) return;
+        }
+        startRecording();
+    });
+
+    voicePlayBtn.addEventListener('click', () => {
+        const nodeId = gameState.currentNode;
+        if (!nodeId) return;
+        if (playingNodeId === nodeId && activeAudio && !activeAudio.paused) {
+            stopActiveAudio();
+        } else {
+            playVoice(nodeId);
+        }
+    });
+
+    voiceDelBtn.addEventListener('click', () => {
+        const nodeId = gameState.currentNode;
+        if (nodeId) deleteVoice(nodeId);
+    });
+
+    // =============================================================
+    // 场景背景渲染（含本页照片优先逻辑）
+    // =============================================================
+    function applySceneBackground(node, nodeId) {
+        const custom = photoCache[nodeId];
+        sceneArea.classList.toggle('custom-photo', Boolean(custom && !node.video));
+        if (custom && !node.video) {
+            sceneArea.style.background =
+                `linear-gradient(rgba(255,252,244,.30), rgba(255,252,244,.30)), url("${custom}") center / cover no-repeat`;
+            return;
+        }
+
+        const loveCgCaption = LOVE_CG_SCENES[nodeId];
+        const isXuPortrait = Boolean(node.xuPhoto && XU_YI_MING_BG[node.xuPhoto] && !node.photo && !node.video);
+        const isArtRoomPortrait = node.scene === '美术室' && node.chars?.length === 1 && node.chars[0] === 'su' && !node.photo && !node.video;
+
+        if (loveCgCaption) {
+            sceneArea.style.background = `url("${LOVE_CG_IMAGE}") center / contain no-repeat #fff5e4`;
+        } else if (node.photo && COUPLE_BG[node.photo]) {
+            sceneArea.style.background = `url("${COUPLE_BG[node.photo]}") center / contain no-repeat #dbeafe`;
+        } else if (isXuPortrait) {
+            sceneArea.style.background = `url("${XU_YI_MING_BG[node.xuPhoto]}") center / contain no-repeat #f4e8d2`;
+        } else if (isArtRoomPortrait) {
+            sceneArea.style.background = `url("${LI_YI_HONG_ART_BG}") center / contain no-repeat #f4e8d2`;
+        } else if (node.chars?.length === 1 && node.chars[0] === 'shen') {
+            const photo = node.scene === '学校田径场' ? ZHANG_ZHENG_BG.sports : ZHANG_ZHENG_BG.daily;
+            sceneArea.style.background = `url("${photo}") center 38% / cover no-repeat`;
+        } else if (node.chars?.length === 1 && node.chars[0] === 'lu') {
+            const photo = nodeId.startsWith('sports_') ? QU_JIA_HUA_BG.sports : QU_JIA_HUA_BG.daily;
+            sceneArea.style.background = `url("${photo}") center 38% / cover no-repeat`;
+        } else if (node.chars?.length === 1 && node.chars[0] === 'su') {
+            sceneArea.style.background = `url("${LI_YI_HONG_BG}") center 25% / cover no-repeat`;
+        } else if (SCENE_BG[node.scene]) {
+            sceneArea.style.background = SCENE_BG[node.scene];
+        } else {
+            sceneArea.style.background = '#f5ecdd';
+        }
+    }
+
+
     function renderNode(nodeId, choiceRewards = {}) {
         const node = story[nodeId];
         if (!node) return;
+        stopActiveAudio();
+        cancelRecording(true);
+        voicePanelOpen = false;
 
         const rewards = { ...choiceRewards };
         let newChapterReward = false;
@@ -2693,28 +3362,7 @@
         const isArtRoomPortrait = node.scene === '美术室' && node.chars?.length === 1 && node.chars[0] === 'su' && !node.photo && !node.video;
         sceneArea.classList.toggle('art-room-portrait', Boolean(isArtRoomPortrait));
         
-        const isZhangZhengScene = node.chars?.length === 1 && node.chars[0] === 'shen';
-        if (loveCgCaption) {
-            sceneArea.style.background = `url("${LOVE_CG_IMAGE}") center / contain no-repeat #fff5e4`;
-        } else if (node.photo && COUPLE_BG[node.photo]) {
-            sceneArea.style.background = `url("${COUPLE_BG[node.photo]}") center / contain no-repeat #dbeafe`;
-        } else if (isXuPortrait) {
-            sceneArea.style.background = `url("${XU_YI_MING_BG[node.xuPhoto]}") center / contain no-repeat #f4e8d2`;
-        } else if (isArtRoomPortrait) {
-            sceneArea.style.background = `url("${LI_YI_HONG_ART_BG}") center / contain no-repeat #f4e8d2`;
-        } else if (isZhangZhengScene) {
-            const photo = node.scene === '学校田径场' ? ZHANG_ZHENG_BG.sports : ZHANG_ZHENG_BG.daily;
-            sceneArea.style.background = `url("${photo}") center 38% / cover no-repeat`;
-        } else if (node.chars?.length === 1 && node.chars[0] === 'lu') {
-            const photo = nodeId.startsWith('sports_') ? QU_JIA_HUA_BG.sports : QU_JIA_HUA_BG.daily;
-            sceneArea.style.background = `url("${photo}") center 38% / cover no-repeat`;
-        } else if (node.chars?.length === 1 && node.chars[0] === 'su') {
-            sceneArea.style.background = `url("${LI_YI_HONG_BG}") center 25% / cover no-repeat`;
-        } else if (SCENE_BG[node.scene]) {
-            sceneArea.style.background = SCENE_BG[node.scene];
-        } else {
-            sceneArea.style.background = '#f5ecdd';
-        }
+        applySceneBackground(node, nodeId);
         sceneName.textContent = node.scene;
         
         Object.values(charElements).forEach(el => el.classList.add('hidden'));
@@ -2737,6 +3385,9 @@
         }
         document.getElementById('tip').textContent = node.choices?.length ? '在下方的便签上做出选择 ↓' : '点击对话，翻到下一页 ↗';
         
+        refreshPhotoSlot();
+        updateVoiceUI();
+        if (autoPlayVoice && voiceCache[nodeId] && !node.video) playVoice(nodeId);
         choicesContainer.innerHTML = '';
         choicesContainer.classList.add('hidden');
         
@@ -2834,6 +3485,16 @@
         });
     });
 
+    Promise.all([loadPhotos(), loadVoices()]).then(() => {
+        if (gameState.currentNode && story[gameState.currentNode]) {
+            applySceneBackground(story[gameState.currentNode], gameState.currentNode);
+            refreshPhotoSlot();
+            updateVoiceUI();
+        }
+    });
+    window.Class04Media = { shutdown() { stopActiveAudio(); cancelRecording(false); } };
+    window.addEventListener?.('pagehide', () => window.Class04Media.shutdown());
+    document.addEventListener?.('visibilitychange', () => { if (document.hidden) window.Class04Media.shutdown(); });
     </script>
 </body>
 </html>
