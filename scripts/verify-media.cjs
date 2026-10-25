@@ -96,7 +96,7 @@ function harness(database = localDatabase()) {
     return { run: text => vm.runInContext(text, context), elements, context, database, tracks, stream, timers, navigator, document, window, Audio };
 }
 
-(async () => {
+async function main() {
     const h = harness(); await flush();
     h.run("startGame('intro1'); renderNode('intro2');");
     h.elements.get('photo-slot-btn').click();
@@ -167,4 +167,7 @@ function harness(database = localDatabase()) {
     reopened.window.Class04Media.shutdown(); await flush();
     assert(reopened.tracks.every(track => track.stopped), 'Background cleanup must release microphone');
     console.log('Media checks passed: page photo persistence/locking, picker navigation race, recording/save/play/delete, autoplay, late permissions, 90s limit, storage failure and background cleanup.');
-})().catch(error => { console.error(error); process.exitCode = 1; });
+}
+if (require.main === module) main().catch(error => { console.error(error); process.exitCode = 1; });
+module.exports = { harness, flush };
+

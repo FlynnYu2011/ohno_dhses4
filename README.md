@@ -7,7 +7,9 @@
 - 吸收「4.0配音图片版」的逐页照片与配音工具：每页可固定一张自选照片；录制最长 90 秒的配音，支持试听、重录、删除和翻页自动播放。
 - 照片和录音保存在当前浏览器或应用的 IndexedDB 中，不上传服务器。翻页或切到后台会停止播放并取消未完成录音；等待权限期间翻页也会取消。
 - Android 通过系统选图器选择照片，录音时按需请求麦克风权限。无需相册整库权限，不录制摄像头视频。
-- 好感度成长提速：剧情选项加分 ×3、首次阅读有出场角色的剧情为对应角色 +2、人物互动 +5、完成每章全员 +15。剧情与章节奖励每轮仅领取一次；不刷人物也能正常通关满分。
+- 调高好感度难度：剧情选择恢复基础分数，章节完成全员 +3，阅读剧情不自动加分。人物互动每人每页仅首次 +1。
+- 新增“心动记忆”翻牌配对小游戏：选一位搭档，找齐 4 对；12 步内 +20、13～18 步 +12、更多步数 +6。每章每人按最高成绩结算，重玩只补发差额，不消耗或扣除好感度。
+- 首次达到 100 时出现飘落爱心和角色庆祝横幅；满格卡片保留勾选徽章，支持减少动态效果设置。
 - 好感度改为醒目的四人卡片，显示“当前数值 / 100”与进度条，初始 0 分也可见；滚动剧情时固定在顶部。
 - 增加水彩爱心 CG，在三处告白得到回应时展示，并附轻微的爱心飘动。友情及慢慢了解的选择不会误触发。
 - 全新装订手记界面：打孔纸页、铅笔双线描边、胶带相纸、手绘人物头像和编号便签。
@@ -20,10 +22,10 @@
 
 发布文件位于 `dist/`，也可从 [GitHub Releases](https://github.com/FlynnYu2011/ohno_dhses4/releases) 下载。
 
-- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4.exe)
-- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4.html)
-- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4.apk)
-- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.3.0/ohno_dhses4-source.zip)
+- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4.exe)
+- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4.html)
+- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4.apk)
+- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4-source.zip)
 
 | 文件 | 使用方式 |
 | --- | --- |
@@ -58,6 +60,8 @@ Android 使用 JDK 17、Android SDK 35 的 `javac`、`d8`、`aapt`、`zipalign` 
 `node scripts/verify-game.cjs` 检查从唯一入口出发的全部节点可达性、93 个选择事件、章节不会倒退或跳过、篇章结果自动衔接、尾声收录与重新开始、媒体引用、朋友圈切换和好感度上限。它不代替浏览器视觉测试或真机测试。
 
 `node scripts/verify-media.cjs` 使用异步浏览器 API 模型检查逐页照片固定/恢复、选图期间切页、配音录制/播放/删除、本地存储失败、延迟权限、90 秒时限和后台清理。尚未用真实麦克风或 Android 真机验证录音与选图。
+
+`node scripts/verify-minigame.cjs` 检查翻牌、错误配对锁定、成绩分档、最佳成绩差额、角色/章节独立奖励、切页取消、全员满分可达性、首次满格特效及新一轮重置。
 
 ## 照片和配音的保存
 

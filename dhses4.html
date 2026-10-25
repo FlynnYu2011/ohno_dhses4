@@ -249,6 +249,31 @@
         #photo-input { display:none; }
         @media(max-width:600px) { #scene-tools { top:45px; } #scene-area.custom-photo { height:350px; } #tool-bar { position:static; padding:0 18px 22px; align-items:center; } #toast { bottom:30px; } }
         @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } }
+        #challenge-bar { margin:14px 26px 0; padding:12px 14px; border:1px dashed #b6a184; border-radius:5px 9px 4px 7px; background:#f4ebd6; display:flex; flex-wrap:wrap; align-items:center; gap:10px; }
+        #challenge-bar label { font-size:14px; }
+        #challenge-target { font:inherit; padding:6px; border:1px solid #ae9978; background:#fffaf0; border-radius:4px; color:#5e503c; }
+        #challenge-launch,#minigame-restart,#minigame-close { padding:8px 14px; background:#e8d5bd; border:1px solid #9c896c; border-radius:4px 8px 3px 6px; box-shadow:2px 2px 0 #b49e7a44; }
+        #challenge-hint { flex-basis:100%; font-size:12px; color:#8b7658; line-height:1.6; }
+        #minigame-panel { margin:14px 26px 24px; padding:20px; background:#fff9e9; border:2px solid #b09b7b; border-radius:7px 5px 12px 4px; }
+        #minigame-title { font-size:21px; font-weight:500; margin-bottom:8px; }
+        #minigame-rules,#minigame-status { font-size:14px; line-height:1.8; }
+        #minigame-status { min-height:28px; margin:12px 0; color:#8e674d; }
+        #minigame-board { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; max-width:480px; margin:18px auto; }
+        .memory-card { min-height:75px; padding:8px; background:repeating-linear-gradient(45deg,#e8dcc1 0 5px,#eee4ce 5px 10px); border:2px solid #a58d69; border-radius:5px 9px 4px 7px; font-size:29px; color:#b78a7b; transition:transform .2s,background .2s; }
+        .memory-card.revealed { background:#fff8ec; transform:rotate(-2deg); }
+        .memory-card.matched { background:#e6ecdb; border-color:#95a179; opacity:.8; }
+        .memory-actions { display:flex; gap:12px; flex-wrap:wrap; }
+        .favor-item.favor-max { background:#fff0df; border-color:#c58b7e; box-shadow:0 0 0 2px #efd3c455; }
+        .favor-max .heart-icon { color:#c46565; }
+        .favor-max .favor-name::after { content:" ✓"; color:#b97866; }
+        #max-favor-effect { position:fixed; inset:0; z-index:100; pointer-events:none; overflow:hidden; }
+        .max-favor-banner { position:absolute; top:22px; left:50%; transform:translateX(-50%) rotate(-2deg); width:max-content; max-width:92vw; padding:18px 24px; text-align:center; background:#fff5e8f5; border:2px solid #c39380; border-radius:8px 5px 12px 4px; box-shadow:4px 5px 0 #b18e6f44; }
+        #max-favor-name { display:block; color:#b36f6a; font-size:22px; line-height:1.5; }
+        .max-favor-banner p { font-size:13px; color:#8b755a; margin-top:5px; }
+        .celebration-heart { position:absolute; top:8%; color:#d29588; animation:max-heart-fall 4.5s ease-out both; }
+        @keyframes max-heart-fall { from { transform:translateY(-30px) rotate(-20deg); opacity:0; } 15% { opacity:.9; } to { transform:translateY(85vh) rotate(110deg); opacity:0; } }
+        @media(max-width:600px) { #challenge-bar,#minigame-panel { margin-left:14px; margin-right:14px; } #minigame-panel { padding:14px; } #minigame-board { gap:8px; } .memory-card { min-height:62px; font-size:25px; } #max-favor-name { font-size:18px; } }
+        @media(prefers-reduced-motion:reduce) { .celebration-heart { animation:none!important; opacity:.4; } .memory-card { transition:none!important; } }
     </style>
 </head>
 <body>
@@ -280,25 +305,25 @@
         <div id="game-header" class="hidden"><span id="chapter-status"></span><span id="page-status">第 001 页</span></div>
         <!-- 好感度栏 -->
         <div id="favor-bar" class="hidden" role="region" aria-label="四位同学的好感度">
-            <div class="favor-item">
+            <div id="shen-favor-card" class="favor-item">
                 <span class="favor-name">张 正</span>
                 <div id="shen-track" class="favor-track" role="progressbar" aria-label="张正好感度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="shen-fill" class="favor-fill"></div></div>
                 <span class="heart-icon">♥</span>
                 <span id="shen-value" class="favor-value">0 / 100</span>
             </div>
-            <div class="favor-item">
+            <div id="lu-favor-card" class="favor-item">
                 <span class="favor-name">曲嘉华</span>
                 <div id="lu-track" class="favor-track" role="progressbar" aria-label="曲嘉华好感度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="lu-fill" class="favor-fill"></div></div>
                 <span class="heart-icon">♥</span>
                 <span id="lu-value" class="favor-value">0 / 100</span>
             </div>
-            <div class="favor-item">
+            <div id="su-favor-card" class="favor-item">
                 <span class="favor-name">李逸鸿</span>
                 <div id="su-track" class="favor-track" role="progressbar" aria-label="李逸鸿好感度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="su-fill" class="favor-fill"></div></div>
                 <span class="heart-icon">♥</span>
                 <span id="su-value" class="favor-value">0 / 100</span>
             </div>
-            <div class="favor-item">
+            <div id="xu-favor-card" class="favor-item">
                 <span class="favor-name">徐一鸣</span>
                 <div id="xu-track" class="favor-track" role="progressbar" aria-label="徐一鸣好感度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="xu-fill" class="favor-fill"></div></div>
                 <span class="heart-icon">♥</span>
@@ -307,6 +332,19 @@
             <p id="favor-feedback" class="hidden" aria-live="polite"></p>
         </div>
 
+        <div id="challenge-bar" class="hidden">
+            <label for="challenge-target">课间搭档</label>
+            <select id="challenge-target"><option value="shen">张正</option><option value="lu">曲嘉华</option><option value="su">李逸鸿</option><option value="xu">徐一鸣</option></select>
+            <button id="challenge-launch" type="button">♡ 心动记忆小游戏</button>
+            <p id="challenge-hint">每章每位同学最高 +20；重玩只补发更高成绩的差额。</p>
+        </div>
+        <section id="minigame-panel" class="hidden" aria-labelledby="minigame-title">
+            <h2 id="minigame-title">心动记忆 · 翻牌配对</h2>
+            <p id="minigame-rules">翻开两张相同的图案，找齐 4 对。12 步以内 +20，13～18 步 +12，更多步数 +6；没有倒计时。</p>
+            <div id="minigame-board" aria-label="翻牌区域"></div>
+            <p id="minigame-status" aria-live="polite"></p>
+            <div class="memory-actions"><button id="minigame-restart" type="button">重新挑战</button><button id="minigame-close" type="button">收起，继续剧情</button></div>
+        </section>
         <!-- 场景区域 -->
         <div id="scene-area" class="hidden">
             <div id="scene-name">樱花走廊</div>
@@ -371,6 +409,7 @@
     <!-- ★ 隐藏的文件选择器 / 工具栏 / 轻提示 -->
     <input id="photo-input" type="file" accept="image/*" hidden>
     <div id="toast" role="status" aria-live="polite"></div>
+    <div id="max-favor-effect" class="hidden" role="status" aria-live="polite"><div id="celebration-hearts" aria-hidden="true"></div><div class="max-favor-banner"><strong id="max-favor-name"></strong><p>♡ 专属心动印章已点亮 ♡</p></div></div>
 
     <script>
     // =============================================================
@@ -2662,7 +2701,7 @@
         xu_mutual: '朋友圈之外，也想与你同频 · 徐一鸣'
     };
 
-    const AFFECTION_RULES = { choiceMultiplier: 3, firstScene: 2, interaction: 5, chapterCompletion: 15 };
+    const AFFECTION_RULES = { choiceMultiplier: 1, firstScene: 0, interaction: 1, chapterCompletion: 3 };
 
     const gameState = {
         favor: { shen: 0, lu: 0, su: 0, xu: 0 },
@@ -2670,7 +2709,10 @@
         pageNumber: 0,
         memories: {},
         visitedNodes: new Set(),
-        completedChapters: new Set()
+        completedChapters: new Set(),
+        interactedNodes: new Set(),
+        miniGameBest: {},
+        celebratedCharacters: new Set()
     };
 
     const startScreen = document.getElementById('start-screen');
@@ -3308,9 +3350,134 @@
     }
 
 
+    let celebrationTimer = null;
+    const celebrationNames = new Set();
+    function resetCelebration() {
+        clearTimeout(celebrationTimer);
+        celebrationTimer = null;
+        celebrationNames.clear();
+        document.getElementById('max-favor-effect').classList.add('hidden');
+        document.getElementById('celebration-hearts').innerHTML = '';
+    }
+
+    function celebrateMaxFavor(id) {
+        if (gameState.celebratedCharacters.has(id)) return;
+        gameState.celebratedCharacters.add(id);
+        celebrationNames.add(CHARACTERS[id].name);
+        clearTimeout(celebrationTimer);
+        document.getElementById('max-favor-name').textContent = [...celebrationNames].join('、') + '好感度满格！';
+        const hearts = document.getElementById('celebration-hearts');
+        hearts.innerHTML = '';
+        for (let i = 0; i < 18; i++) {
+            const heart = document.createElement('span');
+            heart.className = 'celebration-heart';
+            heart.textContent = i % 2 ? '♡' : '♥';
+            heart.style.left = (4 + i * 5.2) + '%';
+            heart.style.fontSize = (17 + i % 4 * 5) + 'px';
+            heart.style.animationDelay = (i % 5 * .13) + 's';
+            hearts.appendChild(heart);
+        }
+        document.getElementById('max-favor-effect').classList.remove('hidden');
+        celebrationTimer = setTimeout(resetCelebration, 5200);
+    }
+
+    let miniGame = null;
+    let miniGameTimer = null;
+    function closeMiniGame() {
+        clearTimeout(miniGameTimer);
+        miniGameTimer = null;
+        miniGame = null;
+        document.getElementById('minigame-panel').classList.add('hidden');
+        document.getElementById('minigame-board').innerHTML = '';
+    }
+
+    function startMiniGame() {
+        const chapter = story[gameState.currentNode]?.chapter;
+        if (!chapter || chapter < 1) return;
+        closeMiniGame();
+        stopActiveAudio(); cancelRecording(true); sportsVideo.pause();
+        voicePanelOpen = false; updateVoiceUI();
+        const selected = document.getElementById('challenge-target').value || 'shen';
+        if (!CHARACTERS[selected]) return;
+        const deck = ['♡', '✦', '✎', '☀', '♡', '✦', '✎', '☀'];
+        for (let i = deck.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        miniGame = { chapter, character: selected, deck, open: [], matched: new Set(), moves: 0, busy: false, done: false };
+        document.getElementById('minigame-panel').classList.remove('hidden');
+        renderMiniGame();
+        document.getElementById('minigame-board').children[0]?.focus?.({ preventScroll: true });
+    }
+
+    function renderMiniGame(focusIndex = null) {
+        if (!miniGame) return;
+        const game = miniGame;
+        const board = document.getElementById('minigame-board');
+        board.innerHTML = '';
+        game.deck.forEach((symbol, index) => {
+            const card = document.createElement('button');
+            const visible = game.open.includes(index) || game.matched.has(index);
+            card.type = 'button';
+            card.className = 'memory-card' + (visible ? ' revealed' : '') + (game.matched.has(index) ? ' matched' : '');
+            card.textContent = visible ? symbol : '?';
+            card.disabled = game.matched.has(index) || game.done;
+            card.setAttribute('aria-label', visible ? symbol + (game.matched.has(index) ? '，已配对' : '，已翻开') : `翻开第 ${index + 1} 张卡片`);
+            card.setAttribute('aria-pressed', String(visible));
+            card.addEventListener('click', () => flipMemoryCard(index));
+            board.appendChild(card);
+        });
+        if (!game.done) document.getElementById('minigame-status').textContent = `搭档：${CHARACTERS[game.character].name} · 已用 ${game.moves} 步 · 配对 ${game.matched.size / 2} / 4`;
+        if (focusIndex !== null && focusIndex >= 0) board.children[focusIndex]?.focus?.({ preventScroll: true });
+    }
+
+    function flipMemoryCard(index) {
+        const game = miniGame;
+        if (!game || game.done || game.busy || !Number.isInteger(index) || index < 0 || index >= game.deck.length || game.matched.has(index) || game.open.includes(index)) return;
+        game.open.push(index);
+        if (game.open.length === 1) { renderMiniGame(index); return; }
+        game.moves++;
+        const [first, second] = game.open;
+        if (game.deck[first] === game.deck[second]) {
+            game.matched.add(first); game.matched.add(second); game.open = [];
+            renderMiniGame(game.deck.findIndex((symbol, i) => !game.matched.has(i)));
+            if (game.matched.size === game.deck.length) finishMiniGame(game);
+        } else {
+            game.busy = true;
+            renderMiniGame(index);
+            miniGameTimer = setTimeout(() => {
+                if (miniGame !== game) return;
+                game.open = []; game.busy = false;
+                renderMiniGame(first);
+            }, 650);
+        }
+    }
+
+    function finishMiniGame(game) {
+        if (miniGame !== game || game.done) return;
+        game.done = true;
+        const score = game.moves <= 12 ? 20 : game.moves <= 18 ? 12 : 6;
+        const key = `${game.chapter}:${game.character}`;
+        const previous = gameState.miniGameBest[key] || 0;
+        const reward = Math.max(0, score - previous);
+        gameState.miniGameBest[key] = Math.max(previous, score);
+        const oldValue = gameState.favor[game.character];
+        if (reward) awardFavor({ [game.character]: reward }, '心动记忆挑战');
+        const actualGain = gameState.favor[game.character] - oldValue;
+        document.getElementById('minigame-status').textContent = `${game.moves} 步完成！${CHARACTERS[game.character].name}好感 +${actualGain} · 本章已领取 ${gameState.miniGameBest[key]} / 20。` + (previous >= score ? '重玩只补发更高成绩的差额。' : '可以换位搭档，或继续剧情。');
+        renderMiniGame();
+        document.getElementById('minigame-restart').focus?.({ preventScroll: true });
+    }
+
+    document.getElementById('challenge-launch').addEventListener('click', startMiniGame);
+    document.getElementById('minigame-restart').addEventListener('click', startMiniGame);
+    document.getElementById('minigame-close').addEventListener('click', closeMiniGame);
+    document.getElementById('challenge-target').addEventListener('change', closeMiniGame);
+
     function renderNode(nodeId, choiceRewards = {}) {
         const node = story[nodeId];
         if (!node) return;
+        if (gameState.currentNode !== nodeId) closeMiniGame();
         stopActiveAudio();
         cancelRecording(true);
         voicePanelOpen = false;
@@ -3327,10 +3494,11 @@
                 Object.keys(CHARACTERS).forEach(id => { rewards[id] = (rewards[id] || 0) + AFFECTION_RULES.chapterCompletion; });
             }
         }
-        if (Object.keys(rewards).length) awardFavor(rewards, newChapterReward ? '章节完成奖励（全员 +15）' : Object.keys(choiceRewards).length ? '剧情选择与推进' : '首次剧情互动');
+        if (Object.keys(rewards).length) awardFavor(rewards, newChapterReward ? '章节完成奖励（全员 +3）' : Object.keys(choiceRewards).length ? '剧情选择与推进' : '首次剧情互动');
         
         if (gameState.currentNode !== nodeId) gameState.pageNumber++;
         gameState.currentNode = nodeId;
+        document.getElementById('challenge-bar').classList.toggle('hidden', node.chapter < 1);
         const loveCgCaption = LOVE_CG_SCENES[nodeId];
         sceneArea.classList.toggle('love-cg', Boolean(loveCgCaption));
         document.getElementById('love-cg-label').classList.toggle('hidden', !loveCgCaption);
@@ -3405,6 +3573,10 @@
                         gameState.pageNumber = 0;
                         gameState.visitedNodes.clear();
                         gameState.completedChapters.clear();
+                        gameState.interactedNodes.clear();
+                        gameState.miniGameBest = {};
+                        gameState.celebratedCharacters.clear();
+                        resetCelebration();
                         document.getElementById('favor-feedback').classList.add('hidden');
                         updateFavorBar();
                     }
@@ -3425,6 +3597,7 @@
             const oldValue = gameState.favor[id];
             const value = Math.max(0, Math.min(100, oldValue + points));
             gameState.favor[id] = value;
+            if (oldValue < 100 && value === 100) celebrateMaxFavor(id);
             if (value !== oldValue) changes.push(`${CHARACTERS[id].name} ${value > oldValue ? '+' : ''}${value - oldValue}`);
         });
         updateFavorBar();
@@ -3442,6 +3615,7 @@
             document.getElementById(`${id}-fill`).style.width = value + '%';
             document.getElementById(`${id}-value`).textContent = `${value} / 100`;
             document.getElementById(`${id}-track`).setAttribute('aria-valuenow', String(value));
+            document.getElementById(`${id}-favor-card`).classList.toggle('favor-max', value === 100);
         });
     }
 
@@ -3468,7 +3642,11 @@
         bubble.style.top = Math.max(55, rect.top - containerRect.top - sceneArea.clientTop - bubble.offsetHeight - 10) + 'px';
         bubble.style.opacity = '1';
         
-        awardFavor({ [charId]: AFFECTION_RULES.interaction }, '人物互动');
+        const interactionKey = `${gameState.currentNode}:${charId}`;
+        if (!gameState.interactedNodes.has(interactionKey)) {
+            gameState.interactedNodes.add(interactionKey);
+            awardFavor({ [charId]: AFFECTION_RULES.interaction }, '本页首次人物互动');
+        }
         
         setTimeout(() => {
             bubble.style.opacity = '0';

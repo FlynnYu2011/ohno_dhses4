@@ -68,9 +68,11 @@ vm.runInContext(`
     for (const id of Object.keys(CHARACTERS)) {
         assert.equal(document.getElementById(id + '-value').textContent, '0 / 100');
         charElements[id].handlers.click();
-        assert.equal(document.getElementById(id + '-value').textContent, '5 / 100');
-        assert.equal(document.getElementById(id + '-fill').style.width, '5%');
-        assert.equal(document.getElementById(id + '-track').attributes['aria-valuenow'], '5');
+        assert.equal(document.getElementById(id + '-value').textContent, '1 / 100');
+        assert.equal(document.getElementById(id + '-fill').style.width, '1%');
+        assert.equal(document.getElementById(id + '-track').attributes['aria-valuenow'], '1');
+        charElements[id].handlers.click();
+        assert.equal(gameState.favor[id], 1, 'Repeated clicks on the same page must not farm affection');
     }
     const reached = new Set();
     function walk(id) {
@@ -144,7 +146,7 @@ vm.runInContext(`
     chaptersSeen.add(story.campus_end.chapter);
     assert.deepEqual([...chaptersSeen], [0, 1, 2, 3, 4, 5, 6]);
     assert.equal(Object.keys(gameState.memories).length, 3);
-    assert(Object.values(gameState.favor).every(value => value === 100), 'Normal playthrough should max all affection without character clicks');
+    assert(Object.values(gameState.favor).some(value => value < 100), 'Story alone should no longer automatically max everyone');
     choicesContainer.children[0].handlers.click();
     let alternateSteps = 0;
     while (gameState.currentNode !== 'campus_end') {
@@ -153,13 +155,13 @@ vm.runInContext(`
         if (node.choices) choicesContainer.children[node.choices.length - 1].handlers.click();
         else dialogBox.handlers.click({ target: { closest() { return null; } } });
     }
-    assert(Object.values(gameState.favor).every(value => value === 100), 'Alternate friendship playthrough should also reach max affection');
+    assert(Object.values(gameState.favor).some(value => value < 100), 'Alternate story should retain room for challenge rewards');
     choicesContainer.children[0].handlers.click();
     renderNode('chapter1_end');
     const firstReward = JSON.stringify(gameState.favor);
     renderNode('chapter1_end');
     assert.equal(JSON.stringify(gameState.favor), firstReward, 'Chapter rewards must not repeat on rerender');
-    assert.equal(gameState.favor.xu, 17);
+    assert.equal(gameState.favor.xu, 3);
     renderNode('intro2');
     const firstSceneReward = gameState.favor.shen;
     renderNode('intro2');
