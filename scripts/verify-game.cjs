@@ -68,9 +68,9 @@ vm.runInContext(`
     for (const id of Object.keys(CHARACTERS)) {
         assert.equal(document.getElementById(id + '-value').textContent, '0 / 100');
         charElements[id].handlers.click();
-        assert.equal(document.getElementById(id + '-value').textContent, '1 / 100');
-        assert.equal(document.getElementById(id + '-fill').style.width, '1%');
-        assert.equal(document.getElementById(id + '-track').attributes['aria-valuenow'], '1');
+        assert.equal(document.getElementById(id + '-value').textContent, '5 / 100');
+        assert.equal(document.getElementById(id + '-fill').style.width, '5%');
+        assert.equal(document.getElementById(id + '-track').attributes['aria-valuenow'], '5');
     }
     const reached = new Set();
     function walk(id) {
@@ -144,6 +144,26 @@ vm.runInContext(`
     chaptersSeen.add(story.campus_end.chapter);
     assert.deepEqual([...chaptersSeen], [0, 1, 2, 3, 4, 5, 6]);
     assert.equal(Object.keys(gameState.memories).length, 3);
+    assert(Object.values(gameState.favor).every(value => value === 100), 'Normal playthrough should max all affection without character clicks');
+    choicesContainer.children[0].handlers.click();
+    let alternateSteps = 0;
+    while (gameState.currentNode !== 'campus_end') {
+        assert(++alternateSteps < 200, 'Alternate playthrough cannot finish');
+        const node = story[gameState.currentNode];
+        if (node.choices) choicesContainer.children[node.choices.length - 1].handlers.click();
+        else dialogBox.handlers.click({ target: { closest() { return null; } } });
+    }
+    assert(Object.values(gameState.favor).every(value => value === 100), 'Alternate friendship playthrough should also reach max affection');
+    choicesContainer.children[0].handlers.click();
+    renderNode('chapter1_end');
+    const firstReward = JSON.stringify(gameState.favor);
+    renderNode('chapter1_end');
+    assert.equal(JSON.stringify(gameState.favor), firstReward, 'Chapter rewards must not repeat on rerender');
+    assert.equal(gameState.favor.xu, 17);
+    renderNode('intro2');
+    const firstSceneReward = gameState.favor.shen;
+    renderNode('intro2');
+    assert.equal(gameState.favor.shen, firstSceneReward, 'First scene rewards must not repeat');
     console.log(JSON.stringify({ storyNodes: Object.keys(story).length, xuNodes: Object.keys(story).filter(k => k.startsWith('xu_')).length, choicesVerified: clicks, allNodesReachable: true }));
 `, context);
 const files = new Set([...html.matchAll(/"([^"\r\n]+\.(?:jpg|png|mp4))"/g)].map(m => m[1]));

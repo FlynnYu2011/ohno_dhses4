@@ -4,6 +4,7 @@
 
 ## 本次更新
 
+- 好感度成长提速：剧情选项加分 ×3、首次阅读有出场角色的剧情为对应角色 +2、人物互动 +5、完成每章全员 +15。剧情与章节奖励每轮仅领取一次；不刷人物也能正常通关满分。
 - 好感度改为醒目的四人卡片，显示“当前数值 / 100”与进度条，初始 0 分也可见；滚动剧情时固定在顶部。
 - 增加水彩爱心 CG，在三处告白得到回应时展示，并附轻微的爱心飘动。友情及慢慢了解的选择不会误触发。
 - 全新装订手记界面：打孔纸页、铅笔双线描边、胶带相纸、手绘人物头像和编号便签。
@@ -16,10 +17,10 @@
 
 发布文件位于 `dist/`，也可从 [GitHub Releases](https://github.com/FlynnYu2011/ohno_dhses4/releases) 下载。
 
-- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.2/ohno_dhses4.exe)
-- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.2/ohno_dhses4.html)
-- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.2/ohno_dhses4.apk)
-- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.2/ohno_dhses4-source.zip)
+- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4.exe)
+- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4.html)
+- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4.apk)
+- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.2.3/ohno_dhses4-source.zip)
 
 | 文件 | 使用方式 |
 | --- | --- |

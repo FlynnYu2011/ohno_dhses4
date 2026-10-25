@@ -145,6 +145,7 @@
         .heart-icon { grid-column:2; grid-row:1; font-size:12px; color:#ba776b; }
         .favor-value { grid-column:3; grid-row:1; font-family:"Microsoft YaHei",sans-serif; font-size:12px; font-weight:600; color:#66523b; white-space:nowrap; font-variant-numeric:tabular-nums; }
         .favor-track { grid-column:1/-1; grid-row:2; width:100%; min-width:0; max-width:none; height:10px; border-color:#a39172; background:#e5dbc8; }
+        #favor-feedback { grid-column:1/-1; font-size:12px; line-height:1.6; color:#98704e; }
         @media(max-width:640px) { #favor-bar { grid-template-columns:repeat(2,minmax(0,1fr)); padding:10px 12px 12px; gap:7px; } .favor-item { padding:7px 8px; } .favor-name { font-size:13px; } .favor-value { font-size:11px; } #favor-bar .favor-track { max-width:none; width:100%; } }
         @media(prefers-reduced-motion:reduce) { *,*::before,*::after { transition:none!important; animation:none!important; } }
 
@@ -203,6 +204,7 @@
                 <span class="heart-icon">♥</span>
                 <span id="xu-value" class="favor-value">0 / 100</span>
             </div>
+            <p id="favor-feedback" class="hidden" aria-live="polite"></p>
         </div>
 
         <!-- 场景区域 -->
@@ -2539,11 +2541,15 @@
         xu_mutual: '朋友圈之外，也想与你同频 · 徐一鸣'
     };
 
+    const AFFECTION_RULES = { choiceMultiplier: 3, firstScene: 2, interaction: 5, chapterCompletion: 15 };
+
     const gameState = {
         favor: { shen: 0, lu: 0, su: 0, xu: 0 },
         currentNode: null,
         pageNumber: 0,
-        memories: {}
+        memories: {},
+        visitedNodes: new Set(),
+        completedChapters: new Set()
     };
 
     const startScreen = document.getElementById('start-screen');
@@ -2636,9 +2642,23 @@
         panel.appendChild(grid);
     }
 
-    function renderNode(nodeId) {
+    function renderNode(nodeId, choiceRewards = {}) {
         const node = story[nodeId];
         if (!node) return;
+
+        const rewards = { ...choiceRewards };
+        let newChapterReward = false;
+        if (!gameState.visitedNodes.has(nodeId)) {
+            gameState.visitedNodes.add(nodeId);
+            (node.chars || []).forEach(id => { rewards[id] = (rewards[id] || 0) + AFFECTION_RULES.firstScene; });
+            const chapterFinished = node.chapterResult || nodeId === 'chapter1_end' || nodeId === 'chapter2_end';
+            newChapterReward = chapterFinished && !gameState.completedChapters.has(node.chapter);
+            if (newChapterReward) {
+                gameState.completedChapters.add(node.chapter);
+                Object.keys(CHARACTERS).forEach(id => { rewards[id] = (rewards[id] || 0) + AFFECTION_RULES.chapterCompletion; });
+            }
+        }
+        if (Object.keys(rewards).length) awardFavor(rewards, newChapterReward ? '章节完成奖励（全员 +15）' : Object.keys(choiceRewards).length ? '剧情选择与推进' : '首次剧情互动');
         
         if (gameState.currentNode !== nodeId) gameState.pageNumber++;
         gameState.currentNode = nodeId;
@@ -2727,22 +2747,40 @@
                 btn.className = 'choice-btn';
                 btn.textContent = choice.text;
                 btn.addEventListener('click', () => {
+                    let choiceRewards = {};
                     if (choice.reset) {
                         Object.keys(gameState.favor).forEach(id => { gameState.favor[id] = 0; });
                         gameState.memories = {};
                         gameState.pageNumber = 0;
+                        gameState.visitedNodes.clear();
+                        gameState.completedChapters.clear();
+                        document.getElementById('favor-feedback').classList.add('hidden');
                         updateFavorBar();
                     }
                     if (choice.favor) {
-                        Object.keys(choice.favor).forEach(char => {
-                            gameState.favor[char] = Math.min(100, gameState.favor[char] + choice.favor[char]);
-                        });
-                        updateFavorBar();
+                        choiceRewards = Object.fromEntries(Object.entries(choice.favor).map(([id, points]) => [id, points * AFFECTION_RULES.choiceMultiplier]));
                     }
-                    renderNode(choice.next);
+                    renderNode(choice.next, choiceRewards);
                 });
                 choicesContainer.appendChild(btn);
             });
+        }
+    }
+
+    function awardFavor(rewards, reason) {
+        const changes = [];
+        Object.entries(rewards).forEach(([id, points]) => {
+            if (!CHARACTERS[id]) return;
+            const oldValue = gameState.favor[id];
+            const value = Math.max(0, Math.min(100, oldValue + points));
+            gameState.favor[id] = value;
+            if (value !== oldValue) changes.push(`${CHARACTERS[id].name} ${value > oldValue ? '+' : ''}${value - oldValue}`);
+        });
+        updateFavorBar();
+        if (changes.length) {
+            const feedback = document.getElementById('favor-feedback');
+            feedback.textContent = `${reason}：${changes.join(' · ')}`;
+            feedback.classList.remove('hidden');
         }
     }
 
@@ -2779,8 +2817,7 @@
         bubble.style.top = Math.max(55, rect.top - containerRect.top - sceneArea.clientTop - bubble.offsetHeight - 10) + 'px';
         bubble.style.opacity = '1';
         
-        gameState.favor[charId] = Math.min(100, gameState.favor[charId] + 1);
-        updateFavorBar();
+        awardFavor({ [charId]: AFFECTION_RULES.interaction }, '人物互动');
         
         setTimeout(() => {
             bubble.style.opacity = '0';
