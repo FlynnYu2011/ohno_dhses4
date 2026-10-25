@@ -7,6 +7,8 @@ if ($LASTEXITCODE -ne 0) { throw 'Story checks failed' }
 if ($LASTEXITCODE -ne 0) { throw 'Photo and voice checks failed' }
 & node scripts/verify-minigame.cjs
 if ($LASTEXITCODE -ne 0) { throw 'Minigame and celebration checks failed' }
+& node scripts/verify-gacha.cjs
+if ($LASTEXITCODE -ne 0) { throw 'Card draw and collection checks failed' }
 & "$PSScriptRoot\optimize-assets.ps1"
 & node scripts/build-web.cjs
 if ($LASTEXITCODE -ne 0) { throw 'HTML build failed' }

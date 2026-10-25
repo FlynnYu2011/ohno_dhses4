@@ -4,6 +4,9 @@
 
 ## 本次更新
 
+- 新增免费抽卡与 12 张角色卡图鉴：R 70%、SR 25%、SSR 5%，10 抽内至少 SR、40 抽内必得 SSR，单抽和十连共用保底。
+- 首次 10 券，五个正文章节首次完成各 +3 券；每章每位搭档首次完成小游戏 +1。完整重开可再赚券，卡册、券、星屑和保底持续保留。
+- 重复卡转为星屑（R +1、SR +3、SSR +10），可自选兑换未收录的卡（R 12、SR 30、SSR 80 星屑）。卡片为收藏内容，好感度仍按剧情及小游戏规则提升。
 - 吸收「4.0配音图片版」的逐页照片与配音工具：每页可固定一张自选照片；录制最长 90 秒的配音，支持试听、重录、删除和翻页自动播放。
 - 照片和录音保存在当前浏览器或应用的 IndexedDB 中，不上传服务器。翻页或切到后台会停止播放并取消未完成录音；等待权限期间翻页也会取消。
 - Android 通过系统选图器选择照片，录音时按需请求麦克风权限。无需相册整库权限，不录制摄像头视频。
@@ -22,10 +25,10 @@
 
 发布文件位于 `dist/`，也可从 [GitHub Releases](https://github.com/FlynnYu2011/ohno_dhses4/releases) 下载。
 
-- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4.exe)
-- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4.html)
-- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4.apk)
-- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.4.0/ohno_dhses4-source.zip)
+- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4.exe)
+- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4.html)
+- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4.apk)
+- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4-source.zip)
 
 | 文件 | 使用方式 |
 | --- | --- |
@@ -62,6 +65,10 @@ Android 使用 JDK 17、Android SDK 35 的 `javac`、`d8`、`aapt`、`zipalign` 
 `node scripts/verify-media.cjs` 使用异步浏览器 API 模型检查逐页照片固定/恢复、选图期间切页、配音录制/播放/删除、本地存储失败、延迟权限、90 秒时限和后台清理。尚未用真实麦克风或 Android 真机验证录音与选图。
 
 `node scripts/verify-minigame.cjs` 检查翻牌、错误配对锁定、成绩分档、最佳成绩差额、角色/章节独立奖励、切页取消、全员满分可达性、首次满格特效及新一轮重置。
+
+`node scripts/verify-gacha.cjs` 检查初始抽卡券、单抽/十连、10/40 抽保底、重复卡星屑、兑换、章节与挑战发券、防重复领取、本地保存、刷新恢复及完整重开后保留图鉴。
+
+卡册使用本地存储，不随设备同步。清除浏览器资料或卸载应用会清空卡册；若当前浏览器无法保存，界面会说明本次记录仅在当前打开期间有效。游戏内抽卡不消耗现实货币。
 
 ## 照片和配音的保存
 

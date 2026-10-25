@@ -274,6 +274,31 @@
         @keyframes max-heart-fall { from { transform:translateY(-30px) rotate(-20deg); opacity:0; } 15% { opacity:.9; } to { transform:translateY(85vh) rotate(110deg); opacity:0; } }
         @media(max-width:600px) { #challenge-bar,#minigame-panel { margin-left:14px; margin-right:14px; } #minigame-panel { padding:14px; } #minigame-board { gap:8px; } .memory-card { min-height:62px; font-size:25px; } #max-favor-name { font-size:18px; } }
         @media(prefers-reduced-motion:reduce) { .celebration-heart { animation:none!important; opacity:.4; } .memory-card { transition:none!important; } }
+        #gacha-launch { padding:9px 15px; color:#69543e; background:#f2dfbc; border:1.5px solid #a28a66; border-radius:5px 10px 4px 8px; box-shadow:2px 3px 0 #ac967344; }
+        #gacha-panel { margin:18px 26px; padding:20px; background:#fff9e9; border:2px solid #ac9574; border-radius:7px 12px 5px 8px; scroll-margin-top:175px; }
+        #gacha-panel h2 { font-size:23px; font-weight:500; margin-bottom:10px; }
+        .gacha-summary { display:flex; flex-wrap:wrap; gap:10px 20px; padding:10px 0; font-size:15px; }
+        #gacha-rules,#gacha-pity,#gacha-storage-note { font-size:12px; line-height:1.8; color:#8d795d; }
+        .gacha-actions { display:flex; flex-wrap:wrap; gap:10px; margin:14px 0; }
+        .gacha-actions button,#gacha-exchange { padding:9px 16px; background:#edd9be; border:1px solid #a18a68; border-radius:4px 9px 3px 7px; box-shadow:2px 2px 0 #a9937033; }
+        #gacha-panel button:disabled { opacity:.45; cursor:default; }
+        #gacha-status { font-size:14px; color:#9a6b50; min-height:26px; line-height:1.8; }
+        #gacha-results,#gacha-gallery { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin:12px 0 20px; }
+        .gacha-card { position:relative; padding:12px 8px; background:#f7f0df; border:1.5px solid #b2a38b; border-radius:5px 9px 4px 7px; text-align:center; box-shadow:2px 3px 0 #ac987733; }
+        .gacha-card.tier-SR { background:#f1e7ef; border-color:#b298b5; }
+        .gacha-card.tier-SSR { background:#fff1cd; border:2px solid #c4a15e; box-shadow:0 0 0 3px #ead8aa66,3px 4px 0 #ac987733; }
+        .gacha-card.unowned { opacity:.5; background:#e9e5da; }
+        .gacha-card .gacha-portrait { width:80px; max-width:85%; margin:4px auto; }
+        .gacha-card svg { width:100%; display:block; }
+        .gacha-card h3 { font-size:14px; font-weight:500; line-height:1.6; margin-top:7px; }
+        .gacha-card small { display:block; color:#927d61; line-height:1.7; font-size:11px; }
+        .gacha-rarity { font-size:12px; letter-spacing:2px; color:#a08051; }
+        #gacha-results .gacha-card { animation:card-reveal .35s ease-out both; }
+        @keyframes card-reveal { from { opacity:0; transform:translateY(12px) rotate(-5deg); } to { opacity:1; transform:translateY(0) rotate(0); } }
+        .gacha-exchange-row { display:flex; flex-wrap:wrap; align-items:center; gap:9px; margin-top:12px; font-size:13px; }
+        #gacha-exchange-card { max-width:100%; font:inherit; padding:7px; border:1px solid #ae9877; background:#fffdf4; }
+        @media(max-width:600px) { #gacha-panel { margin:14px; padding:14px; } #gacha-results,#gacha-gallery { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; } .gacha-card { padding:9px 6px; } }
+        @media(prefers-reduced-motion:reduce) { #gacha-results .gacha-card { animation:none!important; } }
     </style>
 </head>
 <body>
@@ -332,6 +357,19 @@
             <p id="favor-feedback" class="hidden" aria-live="polite"></p>
         </div>
 
+        <section id="gacha-panel" class="hidden" aria-labelledby="gacha-title">
+            <h2 id="gacha-title">✦ 四班心动卡册 ✦</h2>
+            <div class="gacha-summary"><span id="gacha-wallet"></span><span id="gacha-dust"></span><span id="gacha-collected"></span></div>
+            <p id="gacha-rules">基础概率：R 70% · SR 25% · SSR 5%。10 抽内至少 SR，40 抽内必得 SSR。首次获得 10 券，每个正文章节首次完成 +3，每章每位搭档首次完成小游戏 +1。全为游戏内免费奖励。</p>
+            <p id="gacha-pity"></p>
+            <div class="gacha-actions"><button id="gacha-single" type="button">抽一张 · 1 券</button><button id="gacha-ten" type="button">抽十张 · 10 券</button><button id="gacha-close" type="button">收起卡册</button></div>
+            <p id="gacha-status" aria-live="polite"></p>
+            <div id="gacha-results" aria-label="本次抽卡结果"></div>
+            <h3>我的图鉴</h3>
+            <div id="gacha-gallery" aria-label="卡片收集图鉴"></div>
+            <label class="gacha-exchange-row" for="gacha-exchange-card">星屑自选兑换 <select id="gacha-exchange-card"></select><button id="gacha-exchange" type="button">兑换未收录卡片</button></label>
+            <p id="gacha-storage-note">卡册、抽卡券和保底保存在当前浏览器或应用中；完整重开剧情可再赚券，卡册与保底保留。</p>
+        </section>
         <div id="challenge-bar" class="hidden">
             <label for="challenge-target">课间搭档</label>
             <select id="challenge-target"><option value="shen">张正</option><option value="lu">曲嘉华</option><option value="su">李逸鸿</option><option value="xu">徐一鸣</option></select>
@@ -402,6 +440,7 @@
         <!-- 选项区域 -->
         <div id="choices-container" class="hidden"></div>
         <div id="tool-bar" class="hidden" role="group" aria-label="游戏设置">
+            <button id="gacha-launch" type="button">✦ 抽卡与图鉴</button>
             <button id="autoplay-toggle" type="button" aria-pressed="true" title="翻页时自动播放本页已录制的配音">🔁 自动播放配音：开</button>
         </div>
     </div>
@@ -2703,6 +2742,42 @@
 
     const AFFECTION_RULES = { choiceMultiplier: 1, firstScene: 0, interaction: 1, chapterCompletion: 3 };
 
+    const CARD_RULES = { R: { dust: 1, cost: 12 }, SR: { dust: 3, cost: 30 }, SSR: { dust: 10, cost: 80 } };
+    const CARD_TITLES = {
+        shen: ['跑道晨风', '终点等你', '白玫瑰的回答'],
+        lu: ['球场晴天', '并肩的晚风', '把约定写进明天'],
+        su: ['画笔与草莓糖', '窗边留白', '画册里的你'],
+        xu: ['小胡子营业中', '快乐加倍', '朋友圈之外']
+    };
+    const CARD_CATALOG = Object.entries(CARD_TITLES).flatMap(([character, titles]) => titles.map((title, index) => ({ id: `${character}-${index}`, character, title, rarity: ['R', 'SR', 'SSR'][index] })));
+    const GACHA_STORAGE_KEY = 'class04-card-album-v1';
+    let gachaStorageAvailable = true;
+    function freshGachaProfile() { return { version: 1, tickets: 10, dust: 0, pitySR: 0, pitySSR: 0, totalDraws: 0, run: 1, collection: {}, rewards: {} }; }
+    function loadGachaProfile() {
+        try {
+            const raw = localStorage.getItem(GACHA_STORAGE_KEY);
+            if (!raw) return freshGachaProfile();
+            const value = JSON.parse(raw);
+            if (!value || value.version !== 1) return freshGachaProfile();
+            const profile = freshGachaProfile();
+            for (const [key, max] of [['tickets',9999],['dust',1000000],['pitySR',9],['pitySSR',39],['totalDraws',1000000000],['run',1000000000]]) {
+                const number = Number(value[key]);
+                profile[key] = Number.isFinite(number) ? Math.max(key === 'run' ? 1 : 0, Math.min(max, Math.floor(number))) : profile[key];
+            }
+            for (const card of CARD_CATALOG) if (value.collection?.[card.id] === 1) profile.collection[card.id] = 1;
+            for (const [key, earned] of Object.entries(value.rewards || {})) {
+                if (/^(chapter:[1-5]|game:[1-6]:(shen|lu|su|xu))$/.test(key) && earned === true) profile.rewards[key] = true;
+            }
+            return profile;
+        } catch (e) { gachaStorageAvailable = false; return freshGachaProfile(); }
+    }
+    let gachaState = loadGachaProfile();
+    let lastGachaResults = [];
+    function saveGachaProfile() {
+        try { localStorage.setItem(GACHA_STORAGE_KEY, JSON.stringify(gachaState)); gachaStorageAvailable = true; }
+        catch (e) { gachaStorageAvailable = false; }
+    }
+
     const gameState = {
         favor: { shen: 0, lu: 0, su: 0, xu: 0 },
         currentNode: null,
@@ -3352,6 +3427,127 @@
 
     let celebrationTimer = null;
     const celebrationNames = new Set();
+
+    function grantGachaTickets(key, amount) {
+        if (gachaState.rewards[key]) return false;
+        gachaState.rewards[key] = true;
+        gachaState.tickets = Math.min(9999, gachaState.tickets + amount);
+        saveGachaProfile(); renderGachaUI();
+        return true;
+    }
+
+    function nextGachaRun() {
+        gachaState.run++;
+        gachaState.rewards = {};
+        saveGachaProfile(); renderGachaUI();
+    }
+
+    function makeGachaCard(card, note, owned = true) {
+        const item = document.createElement('article');
+        item.className = `gacha-card tier-${card.rarity}` + (owned ? '' : ' unowned');
+        const rarity = document.createElement('span'); rarity.className = 'gacha-rarity'; rarity.textContent = card.rarity;
+        const portrait = document.createElement('div'); portrait.className = 'gacha-portrait'; portrait.innerHTML = characterSketch(card.character);
+        const title = document.createElement('h3'); title.textContent = card.title;
+        const detail = document.createElement('small'); detail.textContent = CHARACTERS[card.character].name + ' · ' + note;
+        item.appendChild(rarity); item.appendChild(portrait); item.appendChild(title); item.appendChild(detail);
+        return item;
+    }
+
+    function renderGachaUI() {
+        document.getElementById('gacha-launch').textContent = `✦ 抽卡与图鉴 · ${gachaState.tickets} 券`;
+        document.getElementById('gacha-wallet').textContent = `抽卡券：${gachaState.tickets}`;
+        document.getElementById('gacha-dust').textContent = `星屑：${gachaState.dust}`;
+        document.getElementById('gacha-collected').textContent = `已收集 ${Object.keys(gachaState.collection).length} / ${CARD_CATALOG.length}`;
+        document.getElementById('gacha-pity').textContent = `距至少 SR 保底还需 ${10 - gachaState.pitySR} 抽；距 SSR 保底还需 ${40 - gachaState.pitySSR} 抽。获得 SR 重置前者，SSR 重置两者。`;
+        document.getElementById('gacha-single').disabled = gachaState.tickets < 1;
+        document.getElementById('gacha-ten').disabled = gachaState.tickets < 10;
+        const results = document.getElementById('gacha-results'); results.innerHTML = '';
+        lastGachaResults.forEach(result => {
+            const card = CARD_CATALOG.find(card => card.id === result.id);
+            results.appendChild(makeGachaCard(card, result.isNew ? '新卡收录' : `重复卡 · 星屑 +${result.dust}`));
+        });
+        const gallery = document.getElementById('gacha-gallery'); gallery.innerHTML = '';
+        CARD_CATALOG.forEach(card => gallery.appendChild(makeGachaCard(card, gachaState.collection[card.id] ? '已收录' : '未收录', Boolean(gachaState.collection[card.id]))));
+        const select = document.getElementById('gacha-exchange-card');
+        if (!select.children.length) CARD_CATALOG.forEach(card => {
+            const option = document.createElement('option'); option.value = card.id;
+            option.textContent = `${card.rarity} · ${CHARACTERS[card.character].name} · ${card.title}（${CARD_RULES[card.rarity].cost} 星屑）`;
+            select.appendChild(option);
+        });
+        const selected = CARD_CATALOG.find(card => card.id === select.value) || CARD_CATALOG[0];
+        const owned = Boolean(gachaState.collection[selected.id]);
+        document.getElementById('gacha-exchange').disabled = owned || gachaState.dust < CARD_RULES[selected.rarity].cost;
+        document.getElementById('gacha-exchange').textContent = owned ? '这张卡已收录' : `兑换 · ${CARD_RULES[selected.rarity].cost} 星屑`;
+        document.getElementById('gacha-storage-note').textContent = gachaStorageAvailable
+            ? '卡册、券和保底保存在当前浏览器或应用中；完整重开剧情可再赚券，卡册与保底保留。'
+            : '当前浏览器无法保存卡册，记录仅在本次打开有效。可使用支持本地存储的浏览器或应用版。';
+    }
+
+    function openGacha() {
+        closeMiniGame(); stopActiveAudio(); cancelRecording(true); sportsVideo.pause();
+        voicePanelOpen = false; updateVoiceUI();
+        document.getElementById('gacha-panel').classList.remove('hidden');
+        renderGachaUI();
+        document.getElementById('gacha-close').focus?.({ preventScroll: true });
+        document.getElementById('gacha-panel').scrollIntoView?.({ block: 'start' });
+    }
+
+    function closeGacha(restoreFocus = false) {
+        document.getElementById('gacha-panel').classList.add('hidden');
+        if (restoreFocus) document.getElementById('gacha-launch').focus?.({ preventScroll: true });
+    }
+
+    function drawCards(count) {
+        if (![1,10].includes(count)) return [];
+        if (gachaState.tickets < count) {
+            document.getElementById('gacha-status').textContent = '抽卡券不足，完成章节或本章首次搭档挑战可获得更多券。';
+            return [];
+        }
+        gachaState.tickets -= count;
+        const pulled = [];
+        for (let i = 0; i < count; i++) {
+            let rarity;
+            if (gachaState.pitySSR >= 39) rarity = 'SSR';
+            else {
+                const roll = Math.random();
+                rarity = roll < .05 ? 'SSR' : (gachaState.pitySR >= 9 || roll < .30) ? 'SR' : 'R';
+            }
+            const pool = CARD_CATALOG.filter(card => card.rarity === rarity);
+            const card = pool[Math.floor(Math.random() * pool.length)];
+            const isNew = !gachaState.collection[card.id];
+            const dust = isNew ? 0 : CARD_RULES[rarity].dust;
+            gachaState.collection[card.id] = 1;
+            gachaState.dust = Math.min(1000000, gachaState.dust + dust);
+            gachaState.pitySR = rarity === 'R' ? gachaState.pitySR + 1 : 0;
+            gachaState.pitySSR = rarity === 'SSR' ? 0 : gachaState.pitySSR + 1;
+            gachaState.totalDraws++;
+            pulled.push({ id: card.id, rarity, isNew, dust });
+        }
+        lastGachaResults = pulled;
+        saveGachaProfile(); renderGachaUI();
+        document.getElementById('gacha-status').textContent = `抽到 ${count} 张卡片，其中新卡 ${pulled.filter(card => card.isNew).length} 张，重复卡转为 ${pulled.reduce((sum, card) => sum + card.dust, 0)} 星屑。`;
+        return pulled;
+    }
+
+    function exchangeGachaCard() {
+        const id = document.getElementById('gacha-exchange-card').value || CARD_CATALOG[0].id;
+        const card = CARD_CATALOG.find(card => card.id === id);
+        if (!card || gachaState.collection[id] || gachaState.dust < CARD_RULES[card.rarity].cost) return false;
+        gachaState.dust -= CARD_RULES[card.rarity].cost;
+        gachaState.collection[id] = 1;
+        lastGachaResults = [{ id, rarity: card.rarity, isNew: true, dust: 0 }];
+        saveGachaProfile(); renderGachaUI();
+        document.getElementById('gacha-status').textContent = `星屑兑换成功：${CHARACTERS[card.character].name} · ${card.title}（${card.rarity}）。`;
+        return true;
+    }
+
+    document.getElementById('gacha-launch').addEventListener('click', openGacha);
+    document.getElementById('gacha-close').addEventListener('click', () => closeGacha(true));
+    document.getElementById('gacha-single').addEventListener('click', () => drawCards(1));
+    document.getElementById('gacha-ten').addEventListener('click', () => drawCards(10));
+    document.getElementById('gacha-exchange').addEventListener('click', exchangeGachaCard);
+    document.getElementById('gacha-exchange-card').addEventListener('change', renderGachaUI);
+    saveGachaProfile(); renderGachaUI();
     function resetCelebration() {
         clearTimeout(celebrationTimer);
         celebrationTimer = null;
@@ -3459,12 +3655,13 @@
         const score = game.moves <= 12 ? 20 : game.moves <= 18 ? 12 : 6;
         const key = `${game.chapter}:${game.character}`;
         const previous = gameState.miniGameBest[key] || 0;
+        const earnedTicket = grantGachaTickets(`game:${game.chapter}:${game.character}`, 1);
         const reward = Math.max(0, score - previous);
         gameState.miniGameBest[key] = Math.max(previous, score);
         const oldValue = gameState.favor[game.character];
         if (reward) awardFavor({ [game.character]: reward }, '心动记忆挑战');
         const actualGain = gameState.favor[game.character] - oldValue;
-        document.getElementById('minigame-status').textContent = `${game.moves} 步完成！${CHARACTERS[game.character].name}好感 +${actualGain} · 本章已领取 ${gameState.miniGameBest[key]} / 20。` + (previous >= score ? '重玩只补发更高成绩的差额。' : '可以换位搭档，或继续剧情。');
+        document.getElementById('minigame-status').textContent = `${game.moves} 步完成！${CHARACTERS[game.character].name}好感 +${actualGain} · 本章已领取 ${gameState.miniGameBest[key]} / 20。` + (earnedTicket ? '首次搭档挑战，抽卡券 +1。' : '') + (previous >= score ? '重玩只补发更高成绩的差额。' : '可以换位搭档，或继续剧情。');
         renderMiniGame();
         document.getElementById('minigame-restart').focus?.({ preventScroll: true });
     }
@@ -3477,7 +3674,7 @@
     function renderNode(nodeId, choiceRewards = {}) {
         const node = story[nodeId];
         if (!node) return;
-        if (gameState.currentNode !== nodeId) closeMiniGame();
+        if (gameState.currentNode !== nodeId) { closeMiniGame(); closeGacha(); }
         stopActiveAudio();
         cancelRecording(true);
         voicePanelOpen = false;
@@ -3491,6 +3688,7 @@
             newChapterReward = chapterFinished && !gameState.completedChapters.has(node.chapter);
             if (newChapterReward) {
                 gameState.completedChapters.add(node.chapter);
+                grantGachaTickets(`chapter:${node.chapter}`, 3);
                 Object.keys(CHARACTERS).forEach(id => { rewards[id] = (rewards[id] || 0) + AFFECTION_RULES.chapterCompletion; });
             }
         }
@@ -3576,6 +3774,7 @@
                         gameState.interactedNodes.clear();
                         gameState.miniGameBest = {};
                         gameState.celebratedCharacters.clear();
+                        nextGachaRun();
                         resetCelebration();
                         document.getElementById('favor-feedback').classList.add('hidden');
                         updateFavorBar();

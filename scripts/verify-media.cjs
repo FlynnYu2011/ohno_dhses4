@@ -52,7 +52,7 @@ function localDatabase() {
     return state;
 }
 
-function harness(database = localDatabase()) {
+function harness(database = localDatabase(), storage = new Map()) {
     const elements = new Map();
     const timers = new Map(); let timerId = 0;
     function element() {
@@ -88,12 +88,11 @@ function harness(database = localDatabase()) {
     class Audio { constructor(url) { this.paused = true; } play() { this.paused = false; return Promise.resolve(); } pause() { this.paused = true; } }
     const window = { indexedDB: database, MediaRecorder: Recorder, handlers: {}, addEventListener(type, fn) { this.handlers[type] = fn; } };
     const navigator = { mediaDevices: { getUserMedia: async () => stream() } };
-    const storage = new Map();
     const context = vm.createContext({ document, window, navigator, indexedDB: database, localStorage: { getItem: k => storage.get(k), setItem: (k,v) => storage.set(k,v) }, console, Blob, URL, Audio, Image, FileReader: Reader, MediaRecorder: Recorder, confirm: () => true,
         setTimeout(fn, ms) { timers.set(++timerId, { fn, ms }); return timerId; }, clearTimeout(id) { timers.delete(id); },
         setInterval() { return ++timerId; }, clearInterval() {} });
     vm.runInContext(source, context);
-    return { run: text => vm.runInContext(text, context), elements, context, database, tracks, stream, timers, navigator, document, window, Audio };
+    return { run: text => vm.runInContext(text, context), elements, context, database, tracks, stream, timers, navigator, document, window, Audio, storage };
 }
 
 async function main() {
