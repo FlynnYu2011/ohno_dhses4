@@ -463,7 +463,15 @@
         "美术室": "linear-gradient(180deg, #f3e8ff 0%, #e9d5ff 100%)",
         "学校田径场": "linear-gradient(180deg, #e0f2fe 0%, #bae6fd 100%)",
         "篮球馆": "linear-gradient(180deg, #ffedd5 0%, #fed7aa 100%)",
-        "运动会后勤区": "linear-gradient(180deg, #fef9c3 0%, #fef08a 100%)"
+        "运动会后勤区": "linear-gradient(180deg, #fef9c3 0%, #fef08a 100%)",
+        "城市雨夜": "linear-gradient(180deg, #1e293b 0%, #334155 100%)",
+        "便利店屋檐": "linear-gradient(180deg, #fff7ed 0%, #fed7aa 100%)",
+        "旧校门口": "linear-gradient(180deg, #e0e7ff 0%, #c7d2fe 100%)",
+        "公寓楼下": "linear-gradient(180deg, #1f2937 0%, #4b5563 100%)",
+        "停电的教室": "linear-gradient(180deg, #0f172a 0%, #1e293b 100%)",
+        "黑暗走廊": "linear-gradient(180deg, #111827 0%, #1f2937 100%)",
+        "器材室": "linear-gradient(180deg, #1c1917 0%, #44403c 100%)",
+        "广播室": "linear-gradient(180deg, #1e1b4b 0%, #312e81 100%)"
     };
 
     // 张正单人剧情背景：日常使用第一张，运动会使用第二张。
@@ -2722,13 +2730,231 @@
             "xu"
         ],
         "chapter": 6,
-        "text": "【全篇完 · 明天也一起】\n放学铃响，四班的同学从走廊向你招手。\n故事暂时写到这里，但明天还有新的相遇。谢谢你把每一页都认真读完。",
+        "text": "【尾声 · 明天也一起】\n放学铃响，四班的同学从走廊向你招手。\n故事写到这里，手记却还剩最后一页——那页记的是两年后的夏天，一场没打招呼就落下来的雨。",
         "choices": [
             {
                 "text": "翻开新的手记，从入学第一天重新开始",
                 "next": "intro1",
                 "reset": true
+            },
+            {
+                "text": "翻到最后一页，看看那个夏天",
+                "next": "adult_intro"
+            },
+            {
+                "text": "翻到夹着蜡烛味的那一页",
+                "next": "blackout_intro"
             }
+        ]
+    },
+    "adult_intro": {
+        "scene": "城市雨夜",
+        "chars": ["shen", "lu", "su", "xu"],
+        "chapter": 7,
+        "speaker": "",
+        "text": "【番外 · 雨停之前】\n高考结束的那个夏天，四班约在老地方聚了一次。散场时天已经黑透，雨来得毫无预兆，把整条街浇成一片模糊的光。",
+        "next": "adult_choice"
+    },
+    "adult_choice": {
+        "scene": "城市雨夜",
+        "chars": ["shen", "lu", "su", "xu"],
+        "chapter": 7,
+        "speaker": "",
+        "text": "张正最后一个出来，手里拎着两把伞。曲嘉华站在屋檐下笑，说这雨下得挺会挑时候。李逸鸿抱着画筒往后退，怕淋到纸。徐一鸣举着手机，想了想，又收了回去。\n\n和谁一起走？",
+        "choices": [
+            { "text": "跟张正走", "favor": { "shen": 5 }, "next": "adult_shen_1" },
+            { "text": "跟曲嘉华走", "favor": { "lu": 5 }, "next": "adult_lu_1" },
+            { "text": "跟李逸鸿走", "favor": { "su": 5 }, "next": "adult_su_1" },
+            { "text": "跟徐一鸣走", "favor": { "xu": 5 }, "next": "adult_xu_1" }
+        ]
+    },
+    "adult_shen_1": {
+        "scene": "城市雨夜", "chars": ["shen"], "chapter": 7, "speaker": "",
+        "text": "他撑开伞，很自然地把伞往我这边偏。走到第三个路口我才发现，他右肩已经湿了一片。",
+        "next": "adult_shen_2"
+    },
+    "adult_shen_2": {
+        "scene": "城市雨夜", "chars": ["shen"], "chapter": 7, "speaker": "张正",
+        "text": "淋湿了会感冒。",
+        "next": "adult_shen_3"
+    },
+    "adult_shen_3": {
+        "scene": "公寓楼下", "chars": ["shen"], "chapter": 7, "speaker": "",
+        "text": "到楼下的时候雨小了些。他停住，把伞收起来，抖了抖水。路灯把他的侧脸照得很安静，睫毛上还挂着一层细小的水汽。",
+        "next": "adult_shen_4"
+    },
+    "adult_shen_4": {
+        "scene": "公寓楼下", "chars": ["shen"], "chapter": 7, "speaker": "张正",
+        "text": "到了。……路上小心。",
+        "next": "adult_end"
+    },
+    "adult_lu_1": {
+        "scene": "便利店屋檐", "chars": ["lu"], "chapter": 7, "speaker": "曲嘉华",
+        "text": "躲一下雨。反正也不急。",
+        "next": "adult_lu_2"
+    },
+    "adult_lu_2": {
+        "scene": "便利店屋檐", "chars": ["lu"], "chapter": 7, "speaker": "",
+        "text": "他今晚喝了两杯，笑起来比平时慢半拍。他忽然伸手，把脖子上的围巾解下来，绕到我脖子上。",
+        "next": "adult_lu_3"
+    },
+    "adult_lu_3": {
+        "scene": "便利店屋檐", "chars": ["lu"], "chapter": 7, "speaker": "曲嘉华",
+        "text": "……你别这样看我。",
+        "next": "adult_lu_4"
+    },
+    "adult_lu_4": {
+        "scene": "便利店屋檐", "chars": ["lu"], "chapter": 7, "speaker": "",
+        "text": "他笑了一下，垂着眼，退开半步，把手插回口袋。\n「走吧。再站下去我要说些不该说的了。」",
+        "next": "adult_end"
+    },
+    "adult_su_1": {
+        "scene": "旧校门口", "chars": ["su"], "chapter": 7, "speaker": "李逸鸿",
+        "text": "往、往这边点……画筒不能淋。",
+        "next": "adult_su_2"
+    },
+    "adult_su_2": {
+        "scene": "旧校门口", "chars": ["su"], "chapter": 7, "speaker": "",
+        "text": "伞太小了，两个人挤在下面，肩膀贴着肩膀。他把伞举得很高，手臂绷着，怕碰到我。",
+        "next": "adult_su_3"
+    },
+    "adult_su_3": {
+        "scene": "旧校门口", "chars": ["su"], "chapter": 7, "speaker": "李逸鸿",
+        "text": "那……那你抓着我袖子。这样不会走散。",
+        "next": "adult_su_4"
+    },
+    "adult_su_4": {
+        "scene": "旧校门口", "chars": ["su"], "chapter": 7, "speaker": "",
+        "text": "我抓住他外套的袖口。他的脚步立刻慢了下来，慢到几乎是在陪我淋雨。\n到地铁口时他飞快地说了句「明年也一起」，转身就跑。",
+        "next": "adult_end"
+    },
+    "adult_xu_1": {
+        "scene": "城市雨夜", "chars": ["xu"], "chapter": 7, "speaker": "徐一鸣",
+        "text": "平时拍照、发圈、想文案，都是给自己找事做。",
+        "next": "adult_xu_2"
+    },
+    "adult_xu_2": {
+        "scene": "城市雨夜", "chars": ["xu"], "chapter": 7, "speaker": "",
+        "text": "他把伞递给我，自己退到雨里。我伸手把他拽回来，他没防备，撞过来，伞歪了一下，两个人都淋到了。",
+        "next": "adult_xu_3"
+    },
+    "adult_xu_3": {
+        "scene": "城市雨夜", "chars": ["xu"], "chapter": 7, "speaker": "徐一鸣",
+        "text": "今天这条，不发朋友圈了。",
+        "next": "adult_xu_4"
+    },
+    "adult_xu_4": {
+        "scene": "城市雨夜", "chars": ["xu"], "chapter": 7, "speaker": "",
+        "text": "他把伞重新举正，手臂从我背后绕过去，把我圈在伞下。那个动作自然得像做过很多次。\n一路走过去，他没再说一句玩笑话。",
+        "next": "adult_end"
+    },
+    "adult_end": {
+        "scene": "樱花走廊", "chars": ["shen", "lu", "su", "xu"], "chapter": 7, "speaker": "",
+        "text": "【全篇完 · 雨停之前】\n雨在后半夜停了。第二天早上，手机里多出几条消息，语气和昨天都不太一样。\n我翻开手记，在最后一页写下日期。有些话，好像从这个夏天开始，才终于可以慢慢说。",
+        "choices": [
+            { "text": "合上手记，重新翻开第一页", "next": "intro1", "reset": true }
+        ]
+    },
+    "blackout_intro": {
+        "scene": "停电的教室", "chars": ["shen", "lu", "su", "xu"], "chapter": 8, "speaker": "",
+        "text": "【番外二 · 停电的十七分钟】\n十二月的晚自习，教学楼忽然整个黑了下来。窗外路灯还亮着，教室里所有人的笔都停在半空。\n没有人尖叫，先是安静，然后有人笑了一声。\n十七分钟后电才回来。可这十七分钟里的很多事，后来谁也没有再提。",
+        "next": "blackout_choice"
+    },
+    "blackout_choice": {
+        "scene": "停电的教室", "chars": ["shen", "lu", "su", "xu"], "chapter": 8, "speaker": "",
+        "text": "黑暗里，四道声音几乎同时响起来——\n张正：「别乱动，靠墙站着。」\n曲嘉华：「有人要跟我去楼梯口看电闸吗？」\n李逸鸿：「我、我去器材室找蜡烛……」\n徐一鸣：「广播室有应急电源，我去试试。」\n\n你去哪边？",
+        "choices": [
+            { "text": "留在原地，跟着张正", "favor": { "shen": 5 }, "next": "blackout_shen_1" },
+            { "text": "跟曲嘉华去楼梯口", "favor": { "lu": 5 }, "next": "blackout_lu_1" },
+            { "text": "陪李逸鸿去器材室", "favor": { "su": 5 }, "next": "blackout_su_1" },
+            { "text": "跟徐一鸣去广播室", "favor": { "xu": 5 }, "next": "blackout_xu_1" }
+        ]
+    },
+    "blackout_shen_1": {
+        "scene": "黑暗走廊", "chars": ["shen"], "chapter": 8, "speaker": "",
+        "text": "走廊里什么都看不见。我扶着墙一步一步往前挪，忽然手腕被人握住了。",
+        "next": "blackout_shen_2"
+    },
+    "blackout_shen_2": {
+        "scene": "黑暗走廊", "chars": ["shen"], "chapter": 8, "speaker": "张正",
+        "text": "是我。",
+        "next": "blackout_shen_3"
+    },
+    "blackout_shen_3": {
+        "scene": "黑暗走廊", "chars": ["shen"], "chapter": 8, "speaker": "",
+        "text": "他的手很稳，掌心是热的。他没松手，只把我往他那边带了半步。\n「台阶。」他低声说。\n走到楼梯口，他才慢慢放开。",
+        "next": "blackout_shen_4"
+    },
+    "blackout_shen_4": {
+        "scene": "黑暗走廊", "chars": ["shen"], "chapter": 8, "speaker": "张正",
+        "text": "刚才，怕吗。……嗯。走回去的时候跟紧点。",
+        "next": "blackout_end"
+    },
+    "blackout_lu_1": {
+        "scene": "黑暗走廊", "chars": ["lu"], "chapter": 8, "speaker": "",
+        "text": "楼梯口，他举着手机手电，光从下往上照着自己的脸。",
+        "next": "blackout_lu_2"
+    },
+    "blackout_lu_2": {
+        "scene": "黑暗走廊", "chars": ["lu"], "chapter": 8, "speaker": "曲嘉华",
+        "text": "你看，像不像鬼片。",
+        "next": "blackout_lu_3"
+    },
+    "blackout_lu_3": {
+        "scene": "黑暗走廊", "chars": ["lu"], "chapter": 8, "speaker": "",
+        "text": "他笑了。然后忽然把手电关掉。\n黑暗里只剩下呼吸声，很近，近到我能听出他是在笑着的。",
+        "next": "blackout_lu_4"
+    },
+    "blackout_lu_4": {
+        "scene": "黑暗走廊", "chars": ["lu"], "chapter": 8, "speaker": "曲嘉华",
+        "text": "……就这样站一会儿。",
+        "next": "blackout_end"
+    },
+    "blackout_su_1": {
+        "scene": "器材室", "chars": ["su"], "chapter": 8, "speaker": "",
+        "text": "器材室里堆满垫子和旧球。他抱着蜡烛，火柴划了三次才着。",
+        "next": "blackout_su_2"
+    },
+    "blackout_su_2": {
+        "scene": "器材室", "chars": ["su"], "chapter": 8, "speaker": "",
+        "text": "火苗跳了一下，他的脸被照得很近，睫毛亮得像镀了一层光。",
+        "next": "blackout_su_3"
+    },
+    "blackout_su_3": {
+        "scene": "器材室", "chars": ["su"], "chapter": 8, "speaker": "李逸鸿",
+        "text": "别、别靠这么近……蜡烛要倒了。",
+        "next": "blackout_su_4"
+    },
+    "blackout_su_4": {
+        "scene": "器材室", "chars": ["su"], "chapter": 8, "speaker": "",
+        "text": "他嘴上这么说，人却没有退。过了一会儿，他把外套脱下来披到我肩上。\n「你手好凉。」",
+        "next": "blackout_end"
+    },
+    "blackout_xu_1": {
+        "scene": "广播室", "chars": ["xu"], "chapter": 8, "speaker": "",
+        "text": "广播室的门没锁。他对着那支没通电的麦克风，很认真地说了句：",
+        "next": "blackout_xu_2"
+    },
+    "blackout_xu_2": {
+        "scene": "广播室", "chars": ["xu"], "chapter": 8, "speaker": "徐一鸣",
+        "text": "喂，测试。喂喂。",
+        "next": "blackout_xu_3"
+    },
+    "blackout_xu_3": {
+        "scene": "广播室", "chars": ["xu"], "chapter": 8, "speaker": "徐一鸣",
+        "text": "反正也没人听得见。……那我说点平时不会说的。",
+        "next": "blackout_xu_4"
+    },
+    "blackout_xu_4": {
+        "scene": "广播室", "chars": ["xu"], "chapter": 8, "speaker": "",
+        "text": "他念了很长一段，声音和平时的玩笑完全不一样。我没敢出声。\n灯亮起来的一瞬间，他伸手把麦克风盖住了。\n「刚才那段，不算。」",
+        "next": "blackout_end"
+    },
+    "blackout_end": {
+        "scene": "停电的教室", "chars": ["shen", "lu", "su", "xu"], "chapter": 8, "speaker": "",
+        "text": "【全篇完 · 十七分钟】\n灯亮起来的时候，四个人的位置和停电前一模一样。\n有人低头继续写题，有人把手机塞回抽屉。\n只有我知道，那十七分钟里有些东西悄悄挪了位置，而且再也挪不回去。",
+        "choices": [
+            { "text": "合上手记，重新翻开第一页", "next": "intro1", "reset": true }
         ]
     }
 };
@@ -2766,7 +2992,7 @@
             }
             for (const card of CARD_CATALOG) if (value.collection?.[card.id] === 1) profile.collection[card.id] = 1;
             for (const [key, earned] of Object.entries(value.rewards || {})) {
-                if (/^(chapter:[1-5]|game:[1-6]:(shen|lu|su|xu))$/.test(key) && earned === true) profile.rewards[key] = true;
+                if (/^(chapter:[1-8]|game:[1-6]:(shen|lu|su|xu))$/.test(key) && earned === true) profile.rewards[key] = true;
             }
             return profile;
         } catch (e) { gachaStorageAvailable = false; return freshGachaProfile(); }
@@ -2817,7 +3043,7 @@
         xu: document.getElementById('avatar-xu')
     };
 
-    const CHAPTER_TITLES = ['序章 · 初见', '第一章 · 四班日常', '第二章 · 运动会', '第三章 · 风把心事告诉你', '第四章 · 画册里的你', '第五章 · 朋友圈之外', '尾声 · 我们的四班手记'];
+    const CHAPTER_TITLES = ['序章 · 初见', '第一章 · 四班日常', '第二章 · 运动会', '第三章 · 风把心事告诉你', '第四章 · 画册里的你', '第五章 · 朋友圈之外', '尾声 · 我们的四班手记', '番外 · 雨停之前', '番外二 · 停电的十七分钟'];
 
     function characterSketch(id) {
         const colors = { shen: '#b6c6ca', lu: '#e2c393', su: '#d9b6ac', xu: '#c2cba8' };

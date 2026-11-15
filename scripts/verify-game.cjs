@@ -112,7 +112,8 @@ vm.runInContext(`
             assert.equal(story[node.next].chapter, node.chapter + 1, 'Chapter transition: ' + id);
         }
         for (const next of [node.next, ...(node.choices || []).map(c => c.next)].filter(Boolean)) {
-            if (id !== 'campus_end') assert(story[next].chapter >= node.chapter, 'Backwards chapter jump: ' + id);
+            const loopsBack = (node.choices || []).some(choice => choice.reset);
+            if (id !== 'campus_end' && !loopsBack) assert(story[next].chapter >= node.chapter, 'Backwards chapter jump: ' + id);
         }
     }
     for (let chapter = 1; chapter <= 6; chapter++) {
