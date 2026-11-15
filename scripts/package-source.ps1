@@ -1,8 +1,9 @@
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 $sourceRoot = Join-Path $projectRoot '.build\github-source'
+if (Test-Path -LiteralPath $sourceRoot) { Remove-Item -LiteralPath $sourceRoot -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $sourceRoot | Out-Null
-foreach ($file in @('dhses4.html', 'README.md', '.gitignore', 'CG_NOTES.md')) {
+foreach ($file in @('dhses4.html', 'README.md', '.gitignore', 'CG_NOTES.md', '剧本-雨停之前.md', '剧本-停电的十七分钟.md')) {
     Copy-Item -LiteralPath (Join-Path $projectRoot $file) -Destination $sourceRoot -Force
 }
 foreach ($directory in @('scripts', 'packaging', '.github')) {

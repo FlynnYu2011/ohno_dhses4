@@ -3,23 +3,25 @@ $projectRoot = Split-Path $PSScriptRoot -Parent
 Set-Location -LiteralPath $projectRoot
 $toolsRoot = Join-Path $projectRoot '.build-tools'
 $jdk = Get-ChildItem -LiteralPath (Join-Path $toolsRoot 'jdk17') -Directory | Select-Object -First 1
+$jdkRoot = $jdk.FullName
 $androidTools = Join-Path $toolsRoot 'android-build-tools\android-15'
 $androidJar = Join-Path $toolsRoot 'android-platform\android-35\android.jar'
 if (!$jdk -or !(Test-Path -LiteralPath $androidJar)) { throw 'Run scripts/setup-build-tools.ps1 first' }
-$env:JAVA_HOME = $jdk.FullName
-$env:PATH = (Join-Path $jdk.FullName 'bin') + ';' + $env:PATH
+$env:JAVA_HOME = $jdkRoot
+$env:PATH = (Join-Path $jdkRoot 'bin') + ';' + $env:PATH
 $work = Join-Path $projectRoot '.build\android'
 New-Item -ItemType Directory -Force -Path "$work\classes", "$work\dex" | Out-Null
 function Check-BuildStep([string]$step) { if ($LASTEXITCODE -ne 0) { throw "$step failed ($LASTEXITCODE)" } }
-& "$jdk\bin\javac.exe" -encoding UTF-8 -source 8 -target 8 -bootclasspath $androidJar -d "$work\classes" packaging\android\src\com\dhses4\campus\MainActivity.java
+& "$jdkRoot\bin\javac.exe" -encoding UTF-8 -source 8 -target 8 -bootclasspath $androidJar -d "$work\classes" packaging\android\src\com\dhses4\campus\MainActivity.java
 Check-BuildStep 'javac'
-& "$jdk\bin\jar.exe" cf "$work\classes.jar" -C "$work\classes" .
+& "$jdkRoot\bin\jar.exe" cf "$work\classes.jar" -C "$work\classes" .
 Check-BuildStep 'jar'
 & "$androidTools\d8.bat" --lib $androidJar --min-api 26 --output "$work\dex" "$work\classes.jar"
 Check-BuildStep 'd8'
 $unsigned = Join-Path $work 'unsigned.apk'
 & "$androidTools\aapt.exe" package -f -M packaging\android\AndroidManifest.xml -S packaging\android\res -I $androidJar -A .build\web -F $unsigned
 Check-BuildStep 'aapt'
+Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 $zip = [System.IO.Compression.ZipFile]::Open($unsigned, [System.IO.Compression.ZipArchiveMode]::Update)
 try { [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, "$work\dex\classes.dex", 'classes.dex') | Out-Null } finally { $zip.Dispose() }
@@ -27,7 +29,7 @@ try { [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, "$wor
 Check-BuildStep 'zipalign'
 $key = Join-Path $toolsRoot 'dhses4-local.keystore'
 if (!(Test-Path -LiteralPath $key)) {
-    & "$jdk\bin\keytool.exe" -genkeypair -keystore $key -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -dname 'CN=Dhses4 Local Build, O=Dhses4, C=CN'
+    & "$jdkRoot\bin\keytool.exe" -genkeypair -keystore $key -storepass android -keypass android -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -dname 'CN=Dhses4 Local Build, O=Dhses4, C=CN'
     Check-BuildStep 'keytool'
 }
 $apk = Join-Path $projectRoot 'dist\ohno_dhses4.apk'

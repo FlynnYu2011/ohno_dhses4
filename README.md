@@ -27,10 +27,10 @@
 
 发布文件位于 `dist/`，也可从 [GitHub Releases](https://github.com/FlynnYu2011/ohno_dhses4/releases) 下载。
 
-- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4.exe)
-- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4.html)
-- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4.apk)
-- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.5.0/ohno_dhses4-source.zip)
+- [Windows EXE](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.6.0/ohno_dhses4.exe)
+- [单文件 HTML](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.6.0/ohno_dhses4.html)
+- [Android APK](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.6.0/ohno_dhses4.apk)
+- [源码包](https://github.com/FlynnYu2011/ohno_dhses4/releases/download/v1.6.0/ohno_dhses4-source.zip)
 
 | 文件 | 使用方式 |
 | --- | --- |
